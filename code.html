@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Jason (Xi-Chuan) Wang - Dynamic Portfolio</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4F46E5",
+              "background-light": "#F8FAFC",
+              "background-dark": "#18181B",
+              "text-light": "#18181B",
+              "text-dark": "#E4E4E7",
+              "card-light": "#FFFFFF",
+              "card-dark": "#27272A",
+              "subtle-light": "#64748B",
+              "subtle-dark": "#A1A1AA",
+              accent: "#8B5CF6", // A new accent color for skills/interactive elements
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem", // 12px
+              lg: "1rem", // 16px
+              xl: "1.5rem", // 24px
+            },
+          },
+        },
+      };
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+      .hide-scroll-bar {
+        -ms-overflow-style: none;scrollbar-width: none;}
+      .hide-scroll-bar::-webkit-scrollbar {
+        display: none;}.about-me-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-out;
+      }
+      .about-me-content.expanded {
+        max-height: 500px;transition: max-height 0.7s ease-in;
+      }.skill-bubble {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        background-color: var(--primary-color);color: white;
+        border-radius: 9999px;font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .skill-bubble:hover {
+        transform: translateY(-2px);
+      }
+      .sub-skills {
+        display: none;
+        position: absolute;
+        bottom: 100%;left: 50%;
+        transform: translateX(-50%);
+        margin-bottom: 0.75rem;background-color: var(--card-light);color: var(--text-light);border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        pointer-events: none;}
+      .dark .sub-skills {
+        background-color: var(--card-dark);color: var(--text-dark);}
+      .skill-bubble:hover .sub-skills,
+      .skill-bubble.active .sub-skills {
+        display: block;
+        opacity: 1;
+        transform: translate(-50%, -8px);pointer-events: auto;
+      }@layer base {
+        :root {
+          --primary-color: #4f46e5;
+          --background-light: #f8fafc;
+          --background-dark: #18181b;
+          --text-light: #18181b;
+          --text-dark: #e4e4e7;
+          --card-light: #ffffff;
+          --card-dark: #27272a;
+          --subtle-light: #64748b;
+          --subtle-dark: #a1a1aa;
+        }
+        .dark {
+          --primary-color: #4f46e5;
+          --background-light: #18181b;--background-dark: #18181b;
+          --text-light: #e4e4e7;
+          --text-dark: #e4e4e7;
+          --card-light: #27272a;
+          --card-dark: #27272a;
+          --subtle-light: #a1a1aa;
+          --subtle-dark: #a1a1aa;
+        }
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark antialiased">
+<div class="max-w-md mx-auto p-6 md:p-8">
+<header class="text-center mb-8">
+<img alt="Profile picture of Jason Wang" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white dark:border-card-dark shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxNUPiEM5R81VO4GTmLBo7eeDLtomc5hewxMwxJvvVx8o5v_dY4sa_8SY81R2AlVRpHSTuNaG4LG9aK6i-2GBZc6tCdGedOZVJlBMARz21nxB2WHJoveurQtlilZDbMVyto_5EkSc_ps6gSZX91hbh8nFYCq6iu2_zbPFSM_S1Z2JvtiEM-MkhZW5WKDCRPcoFJ7S9YQxX8pSLSA_c6PWbjQ6xDO-wwppchVP5OQ-bHMw82n6w4hqCtVF4r6gekoX6VpGlfHmdq00"/>
+<h1 class="text-3xl font-bold text-text-light dark:text-text-dark">
+          Jason (Xi-Chuan) Wang
+        </h1>
+<p class="text-lg text-primary font-semibold mt-1">
+          Creative Software Engineer
+        </p>
+<div class="flex justify-center space-x-4 mt-6 text-subtle-light dark:text-subtle-dark">
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="https://github.com/fooldrum0814" target="_blank">
+<svg aria-hidden="true" class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+<path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" fill-rule="evenodd"></path>
+</svg>
+</a>
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="mailto:cool24583185@gmail.com">
+<span class="material-symbols-outlined !text-3xl">mail</span>
+</a>
+<a class="hover:text-primary dark:hover:text-primary transition-colors" href="tel:+886-906-918-543">
+<span class="material-symbols-outlined !text-3xl">call</span>
+</a>
+</div>
+</header>
+<section class="mt-8 mb-8">
+<div class="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-md cursor-pointer" onclick="document.getElementById('aboutMeContent').classList.toggle('expanded')">
+<h2 class="text-2xl font-bold text-center text-text-light dark:text-text-dark flex items-center justify-center gap-2">
+            About Me
+            <span class="material-symbols-outlined text-xl">expand_more</span>
+</h2>
+<div class="about-me-content mt-4" id="aboutMeContent">
+<p class="text-subtle-light dark:text-subtle-dark text-center">
+              A passionate Software R&amp;D Engineer blending innovative backend
+              solutions with intuitive iOS experiences and thoughtful UI/UX
+              design. I thrive on building impactful products and leading teams
+              to success.
+            </p>
+<p class="text-subtle-light dark:text-subtle-dark text-center mt-2">
+              My journey involves crafting robust APIs, developing elegant mobile
+              apps, and ensuring user-centric design principles are at the
+              forefront of every project.
+            </p>
+</div>
+</div>
+</section>
+<section class="mt-8 mb-8">
+<h2 class="text-2xl font-bold mb-6 text-center">Featured Projects</h2>
+<div class="flex overflow-x-auto snap-x snap-mandatory space-x-4 pb-4 hide-scroll-bar">
+<div class="flex-none w-5/6 sm:w-2/3 md:w-1/2 snap-center bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden flex flex-col">
+<img alt="Project Alpha Thumbnail" class="w-full h-40 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkgzfic083MQhL14OUA6kuTj6zG70pQ3zgUNqN36XA7zx8V45tNxuTDUPNxr_w6LitX7awkestqKdT_60L9jFAAV300JfD9VdCpQ2YcFggk4Q3kweymYgGuPU8RIfa6_Yk7YrJJ32tKs0MczPZLQ7IcJMJQUhB2e2iEJD_7EkU63wOB5x7lL4G80y_ATvnrf1Hgn7m7qTHUG6oJQyuSAVUGySS3kzUL5VfIXOCoLIpQ2BOoKRCut__C5ffR4sM-7q_QwuGDzvFXIk"/>
+<div class="p-4 flex-grow flex flex-col">
+<h3 class="font-bold text-lg mb-1">Project Alpha</h3>
+<p class="text-sm text-subtle-light dark:text-subtle-dark flex-grow">
+                Developed a scalable backend for a new social media platform,
+                handling millions of requests.
+              </p>
+<div class="flex flex-wrap gap-2 mt-3">
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Backend</span>
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Python</span>
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">API</span>
+</div>
+<a class="mt-4 inline-flex items-center text-primary hover:underline text-sm font-semibold" href="#">
+                View Project
+                <span class="material-symbols-outlined !text-base ml-1">arrow_right_alt</span>
+</a>
+</div>
+</div>
+<div class="flex-none w-5/6 sm:w-2/3 md:w-1/2 snap-center bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden flex flex-col">
+<img alt="iOS App Redesign Thumbnail" class="w-full h-40 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3gl7vzaOXIa1UV8uFkKnK7-gRURFQolXTktfo441ON1JSnaOeB5_xC6JwZpufW4RqzaL6OixrHVe0wQji1zVeyKJ85GIKObi8pE1lslLsYoDbsAl-eOmCf2OIyS2YM4GfdWnbbgnHGGQ8UacOidetWqEUMicTiu0fReQdxqz0pcaO_gGgTWBKJCrBHInDZRh6xoOUt-tZ1AH_TLRp4H8th96WBjxoZ0HieGH2HGtQhre9pFNCTUq_V0Dm1jDxRT3-nJwmaN3XtvE"/>
+<div class="p-4 flex-grow flex flex-col">
+<h3 class="font-bold text-lg mb-1">iOS App Redesign</h3>
+<p class="text-sm text-subtle-light dark:text-subtle-dark flex-grow">
+                Led the UI/UX overhaul and implementation for a popular iOS
+                utility app, improving user engagement by 20%.
+              </p>
+<div class="flex flex-wrap gap-2 mt-3">
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">iOS Dev</span>
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">SwiftUI</span>
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">UI/UX</span>
+</div>
+<a class="mt-4 inline-flex items-center text-primary hover:underline text-sm font-semibold" href="#">
+                View Project
+                <span class="material-symbols-outlined !text-base ml-1">arrow_right_alt</span>
+</a>
+</div>
+</div>
+<div class="flex-none w-5/6 sm:w-2/3 md:w-1/2 snap-center bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden flex flex-col">
+<img alt="Cloud Integration Project Thumbnail" class="w-full h-40 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVnJPn1EziQqwq4Lnc9dVeIQTKwEBzdv0lm9Y5EayrY9UpGV4-An5v37eIzaU92XT_yHCekdT-p4ybJobJK4pJz3L_AmCryJwKPnW6Bwvz3o8_iuIGk2_Xvv04BGp7b9fwFIG9kHeH_tXGgX52k_kO6WRSm0GYbJtzwzjf5n83y6KHZSnzSjkHW3w7yS-D2AfRthFN8ueSrytPaV9S8VFE1YjBDBMQNZfLH_J74Ms2Rn14OepbkGaSQxb7vfNonKjG_lJZDWObLE8"/>
+<div class="p-4 flex-grow flex flex-col">
+<h3 class="font-bold text-lg mb-1">Cloud Integration</h3>
+<p class="text-sm text-subtle-light dark:text-subtle-dark flex-grow">
+                Engineered robust integrations with various cloud services for a
+                data analytics platform.
+              </p>
+<div class="flex flex-wrap gap-2 mt-3">
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Databases</span>
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Cloud</span>
+<span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">APIs</span>
+</div>
+<a class="mt-4 inline-flex items-center text-primary hover:underline text-sm font-semibold" href="#">
+                View Project
+                <span class="material-symbols-outlined !text-base ml-1">arrow_right_alt</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-8 mb-8">
+<h2 class="text-2xl font-bold mb-6 text-center">Skills &amp; Expertise</h2>
+<div class="flex flex-wrap justify-center gap-3">
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            Backend Dev
+            <div class="sub-skills dark:bg-card-dark">Python, Java, Node.js</div>
+</div>
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            iOS Dev
+            <div class="sub-skills dark:bg-card-dark">Swift, SwiftUI, MVVM</div>
+</div>
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            UI/UX Design
+            <div class="sub-skills dark:bg-card-dark">Figma, Prototyping</div>
+</div>
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            APIs &amp; Services
+            <div class="sub-skills dark:bg-card-dark">RESTful, OpenAI, Google</div>
+</div>
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            Databases
+            <div class="sub-skills dark:bg-card-dark">MSSQL, PostgreSQL</div>
+</div>
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            Team Management
+            <div class="sub-skills dark:bg-card-dark">Agile, Leadership, Mentoring</div>
+</div>
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            Cloud Platforms
+            <div class="sub-skills dark:bg-card-dark">AWS, Google Cloud</div>
+</div>
+<div class="skill-bubble bg-primary dark:bg-accent" onclick="this.classList.toggle('active')">
+            DevOps
+            <div class="sub-skills dark:bg-card-dark">CI/CD, Docker, Git</div>
+</div>
+</div>
+</section>
+<section class="mt-8">
+<h2 class="text-2xl font-bold mb-6 text-center">Experience Journey</h2>
+<div class="relative pl-6 after:absolute after:top-0 after:bottom-0 after:left-0 after:w-0.5 after:bg-gray-200 dark:after:bg-gray-700">
+<div class="relative mb-8">
+<div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full bg-primary border-4 border-background-light dark:border-background-dark flex items-center justify-center text-white">
+<span class="material-symbols-outlined !text-sm">work</span>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm">
+<p class="text-xs text-subtle-light dark:text-subtle-dark">
+                June 2022 – Present
+              </p>
+<h3 class="font-bold text-text-light dark:text-text-dark">
+                Team Management &amp; Leadership
+              </h3>
+<p class="text-sm text-subtle-light dark:text-subtle-dark font-medium">
+                Interinfo, New Taipei City
+              </p>
+<p class="text-sm mt-2 text-text-light dark:text-text-dark">
+                Project planning, team coordination, and ensuring smooth
+                project execution across cross-platform, backend, and UI/UX
+                projects.
+              </p>
+</div>
+</div>
+<div class="relative mb-8">
+<div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full bg-primary border-4 border-background-light dark:border-background-dark flex items-center justify-center text-white">
+<span class="material-symbols-outlined !text-sm">laptop_mac</span>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm">
+<p class="text-xs text-subtle-light dark:text-subtle-dark">
+                Nov 2021 – May 2022
+              </p>
+<h3 class="font-bold text-text-light dark:text-text-dark">
+                iOS Engineer
+              </h3>
+<p class="text-sm text-subtle-light dark:text-subtle-dark font-medium">
+                Jotangi, Taipei City
+              </p>
+<p class="text-sm mt-2 text-text-light dark:text-text-dark">
+                Developed and maintained iOS apps, integrating payment and
+                Bluetooth functionalities. Managed app release cycles.
+              </p>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full bg-primary border-4 border-background-light dark:border-background-dark flex items-center justify-center text-white">
+<span class="material-symbols-outlined !text-sm">school</span>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm">
+<p class="text-xs text-subtle-light dark:text-subtle-dark">
+                2015 – 2020
+              </p>
+<h3 class="font-bold text-text-light dark:text-text-dark">Education</h3>
+<p class="text-sm text-subtle-light dark:text-subtle-dark font-medium">
+                Ming Chi University of Technology
+              </p>
+<p class="text-sm mt-2 text-text-light dark:text-text-dark">
+                Department of Electronic Engineering.
+              </p>
+</div>
+</div>
+</div>
+</section>
+<footer class="text-center mt-12 text-sm text-subtle-light dark:text-subtle-dark">
+<p>© 2024 Jason (Xi-Chuan) Wang</p>
+</footer>
+</div>
+
+</body></html>
