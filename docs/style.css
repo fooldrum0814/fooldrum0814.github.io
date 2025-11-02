@@ -73,3 +73,12 @@
     body {
       min-height: max(884px, 100dvh);
     }
+
+      #about-me-arrow {
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      /* When the toggle container has a child with the .expanded class, rotate the arrow */
+      .cursor-pointer:has(#aboutMeContent.expanded) #about-me-arrow {
+        transform: rotate(180deg);
+      }

@@ -151,37 +151,37 @@
       <section class="mt-8 mb-8">
         <h2 data-i18n-key="skillsHeader" class="text-2xl font-bold mb-6 text-center">Skills & Expertise</h2>
         <div class="flex flex-wrap justify-center gap-3">
-          <div data-i18n-key="skillLang" class="skill-bubble bg-primary dark:bg-accent">
-            Programming Languages
-            <div class="sub-skills dark:bg-card-dark">Python, JavaScript, Java, Swift, Kotlin, TypeScript, HTML/CSS</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillLang">Programming Languages</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillLangDesc">Python, JavaScript, Java, Swift, Kotlin, TypeScript, HTML/CSS</div>
           </div>
-          <div data-i18n-key="skillBackend" class="skill-bubble bg-primary dark:bg-accent">
-            Backend & Frontend
-            <div class="sub-skills dark:bg-card-dark">Django, Vue.js, Grapes.js, Node.js</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillBackend">Backend & Frontend</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillBackendDesc">Django, Vue.js, Grapes.js, Node.js</div>
           </div>
-          <div data-i18n-key="skillMobile" class="skill-bubble bg-primary dark:bg-accent">
-            Mobile Development
-            <div class="sub-skills dark:bg-card-dark">Swift, SwiftUI, MVVM, Kotlin</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillMobile">Mobile Development</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillMobileDesc">Swift, SwiftUI, MVVM, Kotlin</div>
           </div>
-          <div data-i18n-key="skillAPIs" class="skill-bubble bg-primary dark:bg-accent">
-            APIs & Services
-            <div class="sub-skills dark:bg-card-dark">OpenAI Assistant, Google Maps, LINE Messaging, RESTful</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillAPIs">APIs & Services</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillAPIsDesc">OpenAI Assistant, Google Maps, LINE Messaging, RESTful</div>
           </div>
-          <div data-i18n-key="skillDB" class="skill-bubble bg-primary dark:bg-accent">
-            Databases
-            <div class="sub-skills dark:bg-card-dark">MSSQL, PostgreSQL</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillDB">Databases</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillDBDesc">MSSQL, PostgreSQL</div>
           </div>
-          <div data-i18n-key="skillMgmt" class="skill-bubble bg-primary dark:bg-accent">
-            Team Management
-            <div data-i18n-key="skillMgmtSub" class="sub-skills dark:bg-card-dark">約三年經驗 • Agile • Leadership</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillMgmt">Team Management</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillMgmtSub">約三年經驗 • Agile • Leadership</div>
           </div>
-          <div data-i18n-key="skillTools" class="skill-bubble bg-primary dark:bg-accent">
-            Tools & Platforms
-            <div class="sub-skills dark:bg-card-dark">Git, Figma, GCP, Cursor IDE, Gemini-CLI</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillTools">Tools & Platforms</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillToolsDesc">Git, Figma, GCP, Cursor IDE, Gemini-CLI</div>
           </div>
-          <div data-i18n-key="skillUIUX" class="skill-bubble bg-primary dark:bg-accent">
-            UI/UX Design
-            <div class="sub-skills dark:bg-card-dark">Figma, Prototyping, Data Visualization</div>
+          <div class="skill-bubble bg-primary dark:bg-accent">
+            <span data-i18n-key="skillUIUX">UI/UX Design</span>
+            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillUIUXDesc">Figma, Prototyping, Data Visualization</div>
           </div>
         </div>
       </section>
@@ -290,7 +290,7 @@
       <footer class="text-center mt-12 text-sm text-subtle-light dark:text-subtle-dark">
         <p data-i18n-key="footerCredit">© 2025 Jason (Hsi-Chuan) Wang</p>
         <div class="mt-4">
-          <select id="language-selector" class="bg-card-light dark:bg-card-dark text-subtle-light dark:text-subtle-dark rounded-md p-1 border-transparent focus:border-primary focus:ring-0">
+          <select id="language-selector" class="bg-card-light dark:bg-card-dark text-subtle-light dark:text-subtle-dark rounded-md px-3 py-1.5 pr-8 border border-primary/30 focus:border-primary focus:ring-1 focus:ring-primary appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M6%209L1%204h10z%22/%3E%3C/svg%3E')] dark:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M6%209L1%204h10z%22/%3E%3C/svg%3E')] bg-no-repeat bg-[length:1rem] bg-[right_0.5rem_center] min-w-[120px]">
             <option value="en">English</option>
             <option value="zh-TW">繁體中文</option>
           </select>
