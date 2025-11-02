@@ -1,6 +1,11 @@
+
+// Define types for our translation objects for type safety
+type LanguageTranslations = { [key: string]: string };
+type AllTranslations = { [language: string]: LanguageTranslations };
+
 document.addEventListener('DOMContentLoaded', () => {
   const i18n = {
-    translations: {},
+    translations: {} as AllTranslations,
     availableLanguages: ['en', 'zh-TW'],
 
     async loadTranslations() {
@@ -15,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     },
 
-    translatePage(language) {
+    translatePage(language: string) {
       if (!this.translations[language]) {
         console.warn(`No translations found for language: ${language}`);
         return;
@@ -27,18 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
       elements.forEach(element => {
         const key = element.getAttribute('data-i18n-key');
         if (key && this.translations[language][key]) {
-          // Handle special cases like title
           if (element.tagName === 'TITLE') {
             element.textContent = this.translations[language][key];
           } else {
-            // Use innerHTML to support tags like <strong> in the translations
-            element.innerHTML = this.translations[language][key];
+            (element as HTMLElement).innerHTML = this.translations[language][key];
           }
         }
       });
     },
 
-    getInitialLanguage() {
+    getInitialLanguage(): string {
       const savedLang = localStorage.getItem('language');
       if (savedLang && this.availableLanguages.includes(savedLang)) {
         return savedLang;
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Logic for the "About Me" section toggle
   const aboutMeContent = document.getElementById('aboutMeContent');
   const aboutMeToggle = aboutMeContent?.closest('.cursor-pointer');
-  const aboutMeArrow = document.getElementById('about-me-arrow');
+  const aboutMeArrow = document.getElementById('about-me-arrow') as HTMLElement;
 
   if (aboutMeToggle && aboutMeContent && aboutMeArrow) {
     // Set initial arrow rotation if content is expanded by default
