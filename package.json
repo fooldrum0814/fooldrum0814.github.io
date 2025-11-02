@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Personal portfolio website.",
   "scripts": {
-    "build": "tsc && cp src/style.css docs/ && cp src/translations.json docs/ && cp src/translations.json . && cp index.html docs/ && cp docs/main.js main.js 2>/dev/null || true",
-    "serve": "lsof -ti:8000 | xargs kill -9 2>/dev/null || true; python3 -m http.server 8000",
-    "serve:8080": "python3 -m http.server 8080",
+    "build": "tsc && cp src/style.css docs/ && cp src/translations.json docs/ && cp index.html docs/ && cp docs/main.js main.js 2>/dev/null || true",
+    "serve": "lsof -ti:8000 | xargs kill -9 2>/dev/null || true; cd docs && python3 -m http.server 8000",
+    "serve:8080": "cd docs && python3 -m http.server 8080",
     "dev": "npm run build && npm run serve"
   },
   "devDependencies": {
