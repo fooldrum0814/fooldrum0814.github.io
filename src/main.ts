@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.documentElement.lang = language;
 
       const elements = document.querySelectorAll('[data-i18n-key]');
-      console.log(`Found ${elements.length} elements with data-i18n-key`);
       
       elements.forEach(element => {
         const key = element.getAttribute('data-i18n-key');
@@ -53,8 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
           console.warn(`Translation key "${key}" not found for language "${language}"`);
         }
       });
-      
-      console.log(`Page translated to ${language}`);
     },
 
     getInitialLanguage(): string {
@@ -79,14 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       this.loadTranslations().then(() => {
-        console.log('Translations loaded:', Object.keys(this.translations));
         const initialLang = this.getInitialLanguage();
         languageSelector.value = initialLang;
         this.translatePage(initialLang);
         
         languageSelector.addEventListener('change', (e) => {
           const newLang = (e.target as HTMLSelectElement).value;
-          console.log(`Language changed to: ${newLang}`);
           localStorage.setItem('language', newLang);
           this.translatePage(newLang);
         });
