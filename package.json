@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Personal portfolio website.",
   "scripts": {
-    "build": "tsc && cp src/style.css docs/ && cp index.html docs/"
+    "build": "tsc && cp src/style.css docs/ && cp index.html docs/ && cp docs/main.js main.js 2>/dev/null || true"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
