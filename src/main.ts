@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async loadTranslations() {
       try {
-        const response = await fetch('./translations.json');
+        // 使用相對於當前頁面的路徑，確保在任何部署環境下都能正常工作
+        const translationsUrl = new URL('translations.json', window.location.href);
+        const response = await fetch(translationsUrl);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

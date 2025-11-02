@@ -1,3 +1,6 @@
 node_modules
-/translations.json
+
+# 根目錄的編譯產物，不需要提交（實際部署使用的是 docs/ 目錄）
 /main.js
+/index.html
+/translations.json
