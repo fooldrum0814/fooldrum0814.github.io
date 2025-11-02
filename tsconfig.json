@@ -6,6 +6,7 @@
     "strict": true,
     "lib": ["es6", "dom"],
     "outDir": "./docs",
+    "forceConsistentCasingInFileNames": true,
     "rootDir": "./src"
   },
   "include": ["src"]
