@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadTranslations() {
             return __awaiter(this, void 0, void 0, function* () {
                 try {
-                    const response = yield fetch('/translations.json');
+                    const response = yield fetch('./translations.json');
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
@@ -29,37 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
         translatePage(language) {
             if (!this.translations[language]) {
                 console.warn(`No translations found for language: ${language}`);
-                console.log('Available languages:', Object.keys(this.translations));
                 return;
             }
             document.documentElement.lang = language;
             const elements = document.querySelectorAll('[data-i18n-key]');
-            console.log(`Found ${elements.length} elements with data-i18n-key`);
             elements.forEach(element => {
-                var _a;
                 const key = element.getAttribute('data-i18n-key');
                 if (key && this.translations[language][key]) {
                     if (element.tagName === 'TITLE') {
                         element.textContent = this.translations[language][key];
                     }
-                    else if (element.tagName === 'SPAN' && ((_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.classList.contains('skill-bubble'))) {
-                        // Skill bubble 的 span，只更新文字
-                        element.textContent = this.translations[language][key];
-                    }
-                    else if (element.classList.contains('sub-skills')) {
-                        // Sub-skills div，只更新文字
-                        element.textContent = this.translations[language][key];
-                    }
                     else {
-                        // 其他元素，使用 innerHTML 以支持 HTML
                         element.innerHTML = this.translations[language][key];
                     }
                 }
-                else if (key) {
-                    console.warn(`Translation key "${key}" not found for language "${language}"`);
-                }
             });
-            console.log(`Page translated to ${language}`);
         },
         getInitialLanguage() {
             const savedLang = localStorage.getItem('language');
@@ -74,23 +58,17 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         init() {
             const languageSelector = document.getElementById('language-selector');
-            if (!languageSelector) {
-                console.error('Language selector not found!');
+            if (!languageSelector)
                 return;
-            }
             this.loadTranslations().then(() => {
-                console.log('Translations loaded:', Object.keys(this.translations));
                 const initialLang = this.getInitialLanguage();
                 languageSelector.value = initialLang;
                 this.translatePage(initialLang);
                 languageSelector.addEventListener('change', (e) => {
                     const newLang = e.target.value;
-                    console.log(`Language changed to: ${newLang}`);
                     localStorage.setItem('language', newLang);
                     this.translatePage(newLang);
                 });
-            }).catch(error => {
-                console.error('Failed to initialize translations:', error);
             });
         }
     };
