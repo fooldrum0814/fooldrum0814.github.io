@@ -1,84 +1,91 @@
 
-      .material-symbols-outlined {
-        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
-      }
-      .hide-scroll-bar {
-        -ms-overflow-style: none;scrollbar-width: none;}
-      .hide-scroll-bar::-webkit-scrollbar {
-        display: none;}.about-me-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.5s ease-out;
-      }
-      .about-me-content.expanded {
-        max-height: 500px;transition: max-height 0.7s ease-in;}.skill-bubble {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem 1rem;
-        background-color: var(--primary-color);color: white;
-        border-radius: 9999px;font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      .skill-bubble:hover {
-        transform: translateY(-2px);
-      }
-      .sub-skills {
-        display: none;
-        position: absolute;
-        bottom: 100%;left: 50%;
-        transform: translateX(-50%);
-        margin-bottom: 0.75rem;background-color: var(--card-light);color: var(--text-light);border-radius: 0.5rem;
-        padding: 0.75rem 1rem;
-        white-space: nowrap;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        z-index: 10;
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        pointer-events: none;}
-      .dark .sub-skills {
-        background-color: var(--card-dark);color: var(--text-dark);}
-      .skill-bubble:hover .sub-skills,
-      .skill-bubble.active .sub-skills {
-        display: block;
-        opacity: 1;
-        transform: translate(-50%, -8px);pointer-events: auto;
-      }
-      @layer base {
-        :root {
-          --primary-color: #4f46e5;
-          --background-light: #f8fafc;
-          --background-dark: #18181b;
-          --text-light: #18181b;
-          --text-dark: #e4e4e7;
-          --card-light: #ffffff;
-          --card-dark: #27272a;
-          --subtle-light: #64748b;
-          --subtle-dark: #a1a1aa;
-        }
-        .dark {
-          --primary-color: #4f46e5;
-          --background-light: #18181b;--background-dark: #18181b;
-          --text-light: #e4e4e7;
-          --text-dark: #e4e4e7;
-          --card-light: #27272a;
-          --card-dark: #27272a;
-          --subtle-light: #a1a1aa;
-          --subtle-dark: #a1a1aa;
-        }
-      }
-    body {
-      min-height: max(884px, 100dvh);
-    }
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+.hide-scroll-bar {
+  -ms-overflow-style: none;scrollbar-width: none;}
+.hide-scroll-bar::-webkit-scrollbar {
+  display: none;}.about-me-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out;
+}
+.about-me-content.expanded {
+  max-height: 500px;transition: max-height 0.7s ease-in;}.skill-bubble {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);color: white;
+  border-radius: 9999px;font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+.skill-bubble:hover {
+  transform: translateY(-2px);
+}
+.sub-skills {
+  display: none;
+  position: fixed;
+  background-color: var(--card-light);
+  color: var(--text-light);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  max-width: min(400px, calc(100vw - 2rem));
+  min-width: 150px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+}
+.dark .sub-skills {
+  background-color: var(--card-dark);color: var(--text-dark);}
+.skill-bubble:hover .sub-skills,
+.skill-bubble.active .sub-skills {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+@layer base {
+  :root {
+    --primary-color: #4f46e5;
+    --background-light: #f8fafc;
+    --background-dark: #18181b;
+    --text-light: #18181b;
+    --text-dark: #e4e4e7;
+    --card-light: #ffffff;
+    --card-dark: #27272a;
+    --subtle-light: #64748b;
+    --subtle-dark: #a1a1aa;
+  }
+  .dark {
+    --primary-color: #4f46e5;
+    --background-light: #18181b;--background-dark: #18181b;
+    --text-light: #e4e4e7;
+    --text-dark: #e4e4e7;
+    --card-light: #27272a;
+    --card-dark: #27272a;
+    --subtle-light: #a1a1aa;
+    --subtle-dark: #a1a1aa;
+  }
+}
+body {
+  min-height: max(884px, 100dvh);
+}
 
-      #about-me-arrow {
-        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-      }
+#about-me-arrow {
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
 
-      /* When the toggle container has a child with the .expanded class, rotate the arrow */
-      .cursor-pointer:has(#aboutMeContent.expanded) #about-me-arrow {
-        transform: rotate(180deg);
-      }
+/* When the toggle container has a child with the .expanded class, rotate the arrow */
+.cursor-pointer:has(#aboutMeContent.expanded) #about-me-arrow {
+  transform: rotate(180deg);
+}

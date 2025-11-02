@@ -119,17 +119,275 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Logic for the skill bubbles
   const skillBubbles = document.querySelectorAll('.skill-bubble');
+  
+  // 函數：檢查兩個矩形是否重疊
+  function rectanglesOverlap(rect1: DOMRect, rect2: DOMRect, padding: number = 10): boolean {
+    return !(
+      rect1.right + padding < rect2.left ||
+      rect1.left - padding > rect2.right ||
+      rect1.bottom + padding < rect2.top ||
+      rect1.top - padding > rect2.bottom
+    );
+  }
+
+  // 函數：調整彈出框位置，確保不會超出視窗邊界且不被其他 bubble 擋到
+  function adjustSubSkillsPosition(bubble: Element) {
+    const subSkills = bubble.querySelector('.sub-skills') as HTMLElement;
+    if (!subSkills) return;
+
+    // 確保彈出框已顯示才能獲取正確尺寸
+    if (subSkills.style.display === 'none' || getComputedStyle(subSkills).display === 'none') {
+      subSkills.style.visibility = 'hidden';
+      subSkills.style.display = 'block';
+    }
+
+    // 使用 requestAnimationFrame 確保 DOM 已更新
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const bubbleRect = bubble.getBoundingClientRect();
+        const subSkillsRect = subSkills.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const padding = 16; // 視窗邊緣的留白
+        const verticalOffset = 12; // 向上偏移
+        const bubbleSpacing = 20; // 與其他 bubble 的間距
+
+        // 獲取所有其他 skill bubbles 的位置
+        const otherBubbles: DOMRect[] = [];
+        skillBubbles.forEach(otherBubble => {
+          if (otherBubble !== bubble) {
+            otherBubbles.push(otherBubble.getBoundingClientRect());
+          }
+        });
+
+        // 獲取彈出框的實際寬度和高度
+        const popupWidth = subSkillsRect.width;
+        const popupHeight = subSkillsRect.height;
+
+        // 計算理想的左側位置（氣泡中心對齊）
+        let left = bubbleRect.left + (bubbleRect.width / 2);
+        
+        // 檢查並調整左側位置，確保不超出視窗
+        if (left - popupWidth / 2 < padding) {
+          // 左側會超出，調整到左側留白位置
+          left = padding + popupWidth / 2;
+        } else if (left + popupWidth / 2 > viewportWidth - padding) {
+          // 右側會超出，調整到右側留白位置
+          left = viewportWidth - padding - popupWidth / 2;
+        }
+
+        // 計算垂直位置（優先顯示在氣泡上方）
+        let top = bubbleRect.top - popupHeight - padding - verticalOffset;
+        let showBelow = false;
+        
+        // 如果上方空間不夠，改為顯示在下方
+        if (top < padding) {
+          top = bubbleRect.bottom + padding + verticalOffset;
+          showBelow = true;
+        }
+
+        // 創建彈出框的矩形表示
+        const getPopupRect = (l: number, t: number): DOMRect => {
+          return new DOMRect(l, t, popupWidth, popupHeight);
+        };
+
+        // 檢查是否與任何 bubble 重疊
+        const hasAnyOverlap = (rect: DOMRect): boolean => {
+          for (const otherBubbleRect of otherBubbles) {
+            if (rectanglesOverlap(rect, otherBubbleRect, bubbleSpacing)) {
+              return true;
+            }
+          }
+          return false;
+        };
+
+        // 初始位置
+        let popupLeft = left - popupWidth / 2;
+        let popupTop = top;
+        let popupRect = getPopupRect(popupLeft, popupTop);
+        let hasOverlap = hasAnyOverlap(popupRect);
+        const maxIterations = 10; // 防止無限循環
+        let iterations = 0;
+
+        // 如果上方有重疊，先嘗試移到下方
+        if (hasOverlap && !showBelow) {
+          popupTop = bubbleRect.bottom + padding + verticalOffset;
+          popupRect = getPopupRect(popupLeft, popupTop);
+          hasOverlap = hasAnyOverlap(popupRect);
+          if (!hasOverlap) {
+            showBelow = true;
+          }
+        }
+
+        // 嘗試多種位置調整策略
+        while (hasOverlap && iterations < maxIterations) {
+          iterations++;
+          let foundSolution = false;
+
+          // 策略1: 向上移動（如果在下方的話）
+          if (showBelow) {
+            const testTop = popupTop - popupHeight - bubbleSpacing;
+            if (testTop >= padding) {
+              const testRect = getPopupRect(popupLeft, testTop);
+              if (!hasAnyOverlap(testRect)) {
+                popupTop = testTop;
+                popupRect = testRect;
+                hasOverlap = false;
+                foundSolution = true;
+                break;
+              }
+            }
+          }
+
+          // 策略2: 向右移動
+          if (!foundSolution) {
+            const centerX = left + bubbleSpacing + popupWidth / 2;
+            if (centerX + popupWidth / 2 <= viewportWidth - padding) {
+              const testLeft = centerX - popupWidth / 2;
+              const testRect = getPopupRect(testLeft, popupTop);
+              if (!hasAnyOverlap(testRect)) {
+                popupLeft = testLeft;
+                left = centerX;
+                popupRect = testRect;
+                hasOverlap = false;
+                foundSolution = true;
+                break;
+              }
+            }
+          }
+
+          // 策略3: 向左移動
+          if (!foundSolution) {
+            const centerX = left - bubbleSpacing - popupWidth / 2;
+            if (centerX - popupWidth / 2 >= padding) {
+              const testLeft = centerX - popupWidth / 2;
+              const testRect = getPopupRect(testLeft, popupTop);
+              if (!hasAnyOverlap(testRect)) {
+                popupLeft = testLeft;
+                left = centerX;
+                popupRect = testRect;
+                hasOverlap = false;
+                foundSolution = true;
+                break;
+              }
+            }
+          }
+
+          // 策略4: 向上移動更多（如果在下方）
+          if (!foundSolution && showBelow) {
+            popupTop = bubbleRect.top - popupHeight - padding - verticalOffset - bubbleSpacing;
+            if (popupTop >= padding) {
+              popupRect = getPopupRect(popupLeft, popupTop);
+              if (!hasAnyOverlap(popupRect)) {
+                showBelow = false;
+                hasOverlap = false;
+                foundSolution = true;
+                break;
+              }
+            }
+          }
+
+          // 策略5: 移動到右側較遠的位置
+          if (!foundSolution) {
+            const rightBound = viewportWidth - padding - popupWidth / 2;
+            if (rightBound > left) {
+              left = rightBound;
+              popupLeft = left - popupWidth / 2;
+              popupRect = getPopupRect(popupLeft, popupTop);
+              hasOverlap = hasAnyOverlap(popupRect);
+              if (!hasOverlap) {
+                foundSolution = true;
+                break;
+              }
+            }
+          }
+
+          // 策略6: 移動到左側較遠的位置
+          if (!foundSolution) {
+            const leftBound = padding + popupWidth / 2;
+            if (leftBound < left) {
+              left = leftBound;
+              popupLeft = left - popupWidth / 2;
+              popupRect = getPopupRect(popupLeft, popupTop);
+              hasOverlap = hasAnyOverlap(popupRect);
+              if (!hasOverlap) {
+                foundSolution = true;
+                break;
+              }
+            }
+          }
+
+          // 如果所有策略都失敗，跳出循環（至少嘗試過避免重疊）
+          if (!foundSolution) {
+            break;
+          }
+        }
+        
+        // 更新最終位置
+        top = popupTop;
+
+        // 最後確保不會超出視窗邊界
+        if (left - popupWidth / 2 < padding) {
+          left = padding + popupWidth / 2;
+        } else if (left + popupWidth / 2 > viewportWidth - padding) {
+          left = viewportWidth - padding - popupWidth / 2;
+        }
+
+        if (top < padding) {
+          top = padding;
+        } else if (top + popupHeight > viewportHeight - padding) {
+          top = viewportHeight - padding - popupHeight;
+        }
+
+        // 應用位置（使用 fixed 定位，直接設置 left 和 top）
+        subSkills.style.left = `${left}px`;
+        subSkills.style.top = `${top}px`;
+        subSkills.style.transform = 'translate(-50%, 0)';
+        subSkills.style.visibility = 'visible';
+      });
+    });
+  }
+
   skillBubbles.forEach(bubble => {
     bubble.addEventListener('click', () => {
       // Deactivate other active bubbles
       skillBubbles.forEach(otherBubble => {
         if (otherBubble !== bubble) {
           otherBubble.classList.remove('active');
+          const otherSubSkills = otherBubble.querySelector('.sub-skills') as HTMLElement;
+          if (otherSubSkills) {
+            otherSubSkills.style.left = '';
+            otherSubSkills.style.top = '';
+            otherSubSkills.style.transform = '';
+            otherSubSkills.style.visibility = '';
+          }
         }
       });
       // Toggle the current bubble
       bubble.classList.toggle('active');
+      
+      // 如果彈出框顯示，調整位置
+      if (bubble.classList.contains('active')) {
+        adjustSubSkillsPosition(bubble);
+      } else {
+        const subSkills = bubble.querySelector('.sub-skills') as HTMLElement;
+        if (subSkills) {
+          subSkills.style.left = '';
+          subSkills.style.top = '';
+          subSkills.style.transform = '';
+          subSkills.style.visibility = '';
+        }
+      }
     });
     bubble.removeAttribute('onclick');
+  });
+
+  // 視窗大小改變時重新調整位置
+  window.addEventListener('resize', () => {
+    skillBubbles.forEach(bubble => {
+      if (bubble.classList.contains('active')) {
+        adjustSubSkillsPosition(bubble);
+      }
+    });
   });
 });
