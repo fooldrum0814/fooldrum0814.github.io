@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Personal portfolio website.",
   "scripts": {
-    "build": "tsc && cp src/style.css docs/ && cp src/translations.json docs/ && cp index.html docs/ && cp docs/main.js main.js 2>/dev/null || true",
+    "build": "tsc && cp src/style.css docs/ && cp src/translations.json docs/ && cp index.html docs/ && sed -i '' 's|href=\"src/style.css\"|href=\"style.css\"|g' docs/index.html && cp docs/main.js main.js 2>/dev/null || true",
     "serve": "lsof -ti:8000 | xargs kill -9 2>/dev/null || true; cd docs && python3 -m http.server 8000",
     "serve:8080": "cd docs && python3 -m http.server 8080",
     "dev": "npm run build && npm run serve"
