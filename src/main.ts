@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async loadTranslations() {
       try {
-        const response = await fetch('translations.json');
+        const response = await fetch('./translations.json');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

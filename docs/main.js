@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadTranslations() {
             return __awaiter(this, void 0, void 0, function* () {
                 try {
-                    const response = yield fetch('translations.json');
+                    const response = yield fetch('./translations.json');
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
