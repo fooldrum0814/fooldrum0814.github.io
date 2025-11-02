@@ -1,15 +1,14 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // Logic for the "About Me" section toggle
-  const aboutMeToggle = document.querySelector('[onclick*="aboutMeContent"]');
   const aboutMeContent = document.getElementById('aboutMeContent');
+  // Find the parent div with cursor-pointer class that contains the About Me section
+  const aboutMeToggle = aboutMeContent?.closest('.cursor-pointer');
 
   if (aboutMeToggle && aboutMeContent) {
     aboutMeToggle.addEventListener('click', () => {
       aboutMeContent.classList.toggle('expanded');
     });
-    // Remove the inline onclick attribute to keep HTML clean
-    aboutMeToggle.removeAttribute('onclick');
   }
 
   // Logic for the skill bubbles
