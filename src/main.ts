@@ -84,8 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const newLang = (e.target as HTMLSelectElement).value;
           localStorage.setItem('language', newLang);
           this.translatePage(newLang);
-          // 切換語言後自動滾動到最上方
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          // 切換語言後自動滾動到最上方（兼容手機瀏覽器）
+          setTimeout(() => {
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+          }, 100);
         });
       }).catch(error => {
         console.error('Failed to initialize translations:', error);
