@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const newLang = e.target.value;
                     localStorage.setItem('language', newLang);
                     this.translatePage(newLang);
+                    // 切換語言後自動滾動到最上方
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             }).catch(error => {
                 console.error('Failed to initialize translations:', error);
