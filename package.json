@@ -1,0 +1,11 @@
+{
+  "name": "personal-website",
+  "version": "1.0.0",
+  "description": "Personal portfolio website.",
+  "scripts": {
+    "build": "tsc && cp src/style.css docs/ && cp index.html docs/"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
