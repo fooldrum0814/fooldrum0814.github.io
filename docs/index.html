@@ -3,42 +3,14 @@
   <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self';">
     <title data-i18n-key="pageTitle">Jason (Hsi-Chuan) Wang - Software R&D Engineer</title>
     <meta content="Software R&D Engineer with 3 years of team management experience, specializing in cross-platform development, backend services, and UI/UX design. Focused on delivering value, not just code." name="description"/>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#4F46E5",
-              "background-light": "#F8FAFC",
-              "background-dark": "#18181B",
-              "text-light": "#18181B",
-              "text-dark": "#E4E4E7",
-              "card-light": "#FFFFFF",
-              "card-dark": "#27272A",
-              "subtle-light": "#64748B",
-              "subtle-dark": "#A1A1AA",
-              accent: "#8B5CF6", // A new accent color for skills/interactive elements
-            },
-            fontFamily: {
-              display: ["Poppins", "sans-serif"],
-            },
-            borderRadius: {
-              DEFAULT: "0.75rem", // 12px
-              lg: "1rem", // 16px
-              xl: "1.5rem", // 24px
-            },
-          },
-        },
-      };
-    </script>
+    <link href="tailwind.css" rel="stylesheet"/>
     <link href="style.css" rel="stylesheet"/>
   </head>
   <body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark antialiased">

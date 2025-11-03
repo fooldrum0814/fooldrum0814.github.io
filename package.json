@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "Personal portfolio website.",
   "scripts": {
-    "build": "tsc && cp src/style.css docs/ && cp src/translations.json docs/ && cp index.html docs/ && sed -i '' 's|href=\"src/style.css\"|href=\"style.css\"|g' docs/index.html && cp docs/main.js main.js 2>/dev/null || true",
+    "build:css": "npx tailwindcss -i ./src/input.css -o ./docs/tailwind.css --minify",
+    "build": "npm run build:css && tsc && cp src/style.css docs/ && cp src/translations.json docs/ && cp index.html docs/ && sed -i '' 's|href=\"src/style.css\"|href=\"style.css\"|g' docs/index.html && sed -i '' 's|href=\"tailwind.css\"|href=\"tailwind.css\"|g' docs/index.html && cp docs/main.js main.js 2>/dev/null || true",
     "serve": "lsof -ti:8000 | xargs kill -9 2>/dev/null || true; cd docs && python3 -m http.server 8000",
     "serve:8080": "cd docs && python3 -m http.server 8080",
     "dev": "npm run build && npm run serve"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
     "typescript": "^5.9.3"
   }
 }
