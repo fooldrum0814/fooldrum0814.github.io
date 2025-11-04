@@ -1,8 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { google } from 'googleapis';
+import path from 'path';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -49,7 +50,7 @@ app.get('/freebusy', async (req, res) => {
     res.json(result.data.calendars?.primary.busy);
   } catch (error) {
     console.error('Error fetching free/busy times:', error);
-    res.status(500).send('Error fetching free/busy times');
+    res.status(500).send('Error fetching free/busy times' + error);
   }
 });
 
