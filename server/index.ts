@@ -30,6 +30,29 @@ app.get('/calendars', async (req, res) => {
   }
 });
 
+app.get('/freebusy', async (req, res) => {
+  const { start, end } = req.query;
+
+  if (!start || !end) {
+    return res.status(400).send('Missing start or end query parameter');
+  }
+
+  try {
+    const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+    const result = await calendar.freebusy.query({
+      requestBody: {
+        timeMin: start as string,
+        timeMax: end as string,
+        items: [{ id: 'primary' }],
+      },
+    });
+    res.json(result.data.calendars?.primary.busy);
+  } catch (error) {
+    console.error('Error fetching free/busy times:', error);
+    res.status(500).send('Error fetching free/busy times');
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
