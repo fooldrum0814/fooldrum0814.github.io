@@ -8,8 +8,18 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
 
-// Enable CORS for the frontend origin
-app.use(cors({ origin: 'http://localhost:8000' }));
+// Enable CORS for allowed origins
+const whitelist = ['http://localhost:8000', 'https://fooldrum0814.github.io'];
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    if (whitelist.indexOf(origin || '') !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+app.use(cors(corsOptions));
 app.use(express.json()); // Middleware to parse JSON bodies
 
 const port = process.env.PORT || 3000;

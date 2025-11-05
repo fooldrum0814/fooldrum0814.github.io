@@ -485,6 +485,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- Booking Modal Logic ---
+  const isProduction = window.location.hostname.includes('github.io');
+  // TODO: Replace with your deployed backend URL in production
+  const API_BASE_URL = isProduction ? 'https://your-backend-url.com' : 'http://localhost:3000';
   const bookingModal = document.getElementById('booking-modal') as HTMLElement;
   const bookingButton = document.getElementById('booking-button') as HTMLElement;
   const bookingButtonFooter = document.getElementById('booking-button-footer') as HTMLElement;
@@ -536,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Start of today
     const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14); // 14 days from now
 
-    const apiURL = `http://localhost:3000/freebusy?start=${startDate.toISOString()}&end=${endDate.toISOString()}`;
+    const apiURL = `${API_BASE_URL}/freebusy?start=${startDate.toISOString()}&end=${endDate.toISOString()}`;
 
     try {
       const response = await fetch(apiURL);
@@ -635,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
       confirmBookingButton.textContent = '預約中...';
 
       try {
-        const response = await fetch('http://localhost:3000/create-event', {
+        const response = await fetch(`${API_BASE_URL}/create-event`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
