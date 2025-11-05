@@ -89,3 +89,40 @@ body {
 .cursor-pointer:has(#aboutMeContent.expanded) #about-me-arrow {
   transform: rotate(180deg);
 }
+
+/* Booking Modal Styles */
+#booking-modal.hidden {
+    display: none;
+}
+
+.time-slot {
+    @apply bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg p-3 text-center cursor-pointer transition-all duration-200;
+}
+
+.time-slot.available {
+    @apply bg-primary/10 text-primary hover:bg-primary/20 hover:font-bold;
+}
+
+.time-slot.selected {
+    @apply bg-primary text-white font-bold ring-2 ring-offset-2 ring-offset-card-light dark:ring-offset-card-dark ring-primary;
+}
+
+#booking-loader .loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid;
+    border-color: #4f46e5 transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

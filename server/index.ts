@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import { google } from 'googleapis';
 import path from 'path';
@@ -6,6 +7,10 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
+
+// Enable CORS for the frontend origin
+app.use(cors({ origin: 'http://localhost:8000' }));
+
 const port = process.env.PORT || 3000;
 
 const oAuth2Client = new google.auth.OAuth2(

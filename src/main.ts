@@ -483,4 +483,159 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // --- Booking Modal Logic ---
+  const bookingModal = document.getElementById('booking-modal') as HTMLElement;
+  const bookingButton = document.getElementById('booking-button') as HTMLElement;
+  const closeModalButton = document.getElementById('booking-modal-close') as HTMLElement;
+  const bookingLoader = document.getElementById('booking-loader') as HTMLElement;
+  const bookingContent = document.getElementById('booking-content') as HTMLElement;
+  const timeSlotsContainer = document.getElementById('time-slots-container') as HTMLElement;
+  const bookingFooter = document.getElementById('booking-footer') as HTMLElement;
+  const bookingConfirmationText = document.getElementById('booking-confirmation-text') as HTMLElement;
+  const confirmBookingButton = document.getElementById('confirm-booking-button') as HTMLElement;
+
+  let selectedSlot: { start: Date, end: Date } | null = null;
+
+  const openModal = () => {
+    bookingModal.classList.remove('hidden');
+    bookingModal.classList.add('flex');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    fetchAndDisplayAvailableSlots();
+  };
+
+  const closeModal = () => {
+    bookingModal.classList.add('hidden');
+    bookingModal.classList.remove('flex');
+    document.body.style.overflow = '';
+    // Reset modal state
+    timeSlotsContainer.innerHTML = '';
+    bookingLoader.style.display = 'block';
+    bookingContent.classList.add('hidden');
+    bookingFooter.classList.add('hidden');
+    selectedSlot = null;
+  };
+
+  bookingButton.addEventListener('click', openModal);
+  closeModalButton.addEventListener('click', closeModal);
+  // Close modal if clicking on the background overlay
+  bookingModal.addEventListener('click', (e) => {
+    if (e.target === bookingModal) {
+      closeModal();
+    }
+  });
+
+  async function fetchAndDisplayAvailableSlots() {
+    bookingLoader.style.display = 'block';
+    bookingContent.classList.add('hidden');
+    timeSlotsContainer.innerHTML = ''; // Clear previous slots
+
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Start of today
+    const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14); // 14 days from now
+
+    const apiURL = `http://localhost:3000/freebusy?start=${startDate.toISOString()}&end=${endDate.toISOString()}`;
+
+    try {
+      const response = await fetch(apiURL);
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      const busySlots: { start: string, end: string }[] = await response.json();
+      renderTimeSlots(startDate, endDate, busySlots);
+    } catch (error) {
+      console.error("Error fetching available slots:", error);
+      timeSlotsContainer.innerHTML = `<p class="text-red-500 col-span-full text-center">無法載入可預約時段，請稍後再試。</p>`;
+    } finally {
+      bookingLoader.style.display = 'none';
+      bookingContent.classList.remove('hidden');
+    }
+  }
+
+  function renderTimeSlots(startDate: Date, endDate: Date, busySlots: { start: string, end: string }[]) {
+    timeSlotsContainer.innerHTML = ''; // Clear again before rendering
+    const busyIntervals = busySlots.map(slot => ({ start: new Date(slot.start), end: new Date(slot.end) }));
+
+    const slotDurationMinutes = 60;
+    let availableSlotsFound = false;
+
+    for (let day = new Date(startDate); day < endDate; day.setDate(day.getDate() + 1)) {
+      // Define business hours (e.g., 9 AM to 5 PM in local time)
+      const businessHoursStart = 9;
+      const businessHoursEnd = 17;
+      const dayOfWeek = day.getDay(); // Sunday = 0, Saturday = 6
+
+      // Skip weekends
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        continue;
+      }
+
+      const dayContainer = document.createElement('div');
+      dayContainer.className = 'col-span-full';
+      
+      const dayHeader = document.createElement('h3');
+      dayHeader.className = 'text-lg font-semibold text-text-light dark:text-text-dark mt-4 mb-2 border-b pb-2';
+      dayHeader.textContent = day.toLocaleDateString(i18n.getInitialLanguage(), { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      dayContainer.appendChild(dayHeader);
+      timeSlotsContainer.appendChild(dayContainer);
+
+      for (let hour = businessHoursStart; hour < businessHoursEnd; hour++) {
+        const slotStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour, 0, 0);
+        const slotEnd = new Date(slotStart.getTime() + slotDurationMinutes * 60 * 1000);
+
+        // Check if the slot is in the past
+        if (slotStart < new Date()) {
+          continue;
+        }
+
+        // Check for overlap with busy intervals
+        const isBusy = busyIntervals.some(busy => 
+          (slotStart < busy.end && slotEnd > busy.start)
+        );
+
+        if (!isBusy) {
+          availableSlotsFound = true;
+          const slotButton = document.createElement('button');
+          slotButton.className = 'time-slot available';
+          slotButton.textContent = slotStart.toLocaleTimeString(i18n.getInitialLanguage(), { hour: '2-digit', minute: '2-digit', hour12: false });
+          slotButton.dataset.slotStart = slotStart.toISOString();
+          slotButton.dataset.slotEnd = slotEnd.toISOString();
+
+          slotButton.addEventListener('click', () => {
+            // Remove selected class from any previously selected slot
+            const currentlySelected = timeSlotsContainer.querySelector('.time-slot.selected');
+            if (currentlySelected) {
+              currentlySelected.classList.remove('selected');
+            }
+
+            // Add selected class to the clicked slot
+            slotButton.classList.add('selected');
+            selectedSlot = { start: slotStart, end: slotEnd };
+
+            // Show footer with confirmation
+            bookingConfirmationText.textContent = `您選擇了 ${day.toLocaleDateString(i18n.getInitialLanguage(), { month: 'long', day: 'numeric' })} ${slotButton.textContent} 的時段。`;
+            bookingFooter.classList.remove('hidden');
+          });
+
+          timeSlotsContainer.appendChild(slotButton);
+        }
+      }
+    }
+
+    if (!availableSlotsFound) {
+        timeSlotsContainer.innerHTML = `<p class="text-gray-500 col-span-full text-center">抱歉，未來兩週內沒有可預約的時段。</p>`;
+    }
+  }
+
+  confirmBookingButton.addEventListener('click', () => {
+    if (selectedSlot) {
+        alert(`預約成功！\n時間：${selectedSlot.start.toLocaleString()}`);
+        // Here you would call the backend to create the event
+        // For now, we just close the modal
+        closeModal();
+    } else {
+        alert("請先選擇一個時段。");
+    }
+  });
+
 });
