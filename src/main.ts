@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Booking Modal Logic ---
   const isProduction = window.location.hostname.includes('github.io');
   // TODO: Replace with your deployed backend URL in production
-  const API_BASE_URL = isProduction ? 'https://your-backend-url.com' : 'http://localhost:3000';
+  const API_BASE_URL = isProduction ? 'https://booking-server-110187416117.asia-east1.run.app' : 'http://localhost:3000';
   const bookingModal = document.getElementById('booking-modal') as HTMLElement;
   const bookingButton = document.getElementById('booking-button') as HTMLElement;
   const bookingButtonFooter = document.getElementById('booking-button-footer') as HTMLElement;
