@@ -26,7 +26,9 @@
 ### 1. Google Cloud Platform 設定
 
 1.  **建立新專案**：前往 [Google Cloud Platform Console](https://console.cloud.google.com/) 建立一個新的專案。
-2.  **啟用 API**：在側邊選單選擇 **API 和服務 > 程式庫**，搜尋並**啟用** "Google Calendar API"。
+2.  **啟用 API**：在側邊選單選擇 **API 和服務 > 程式庫**，搜尋並**啟用**以下兩個 API：
+    -   **Google Calendar API** （用於管理日曆事件）
+    -   **Gmail API** （用於發送預約通知郵件）
 3.  **設定同意畫面**：在 **API 和服務 > OAuth 同意畫面** 中：
     -   選擇 **外部 (External)**。
     -   填寫必要的應用程式資訊（名稱、使用者支援電子郵件等）。
@@ -46,13 +48,18 @@
     GOOGLE_CLIENT_ID=從GCP複製的用戶端ID
     GOOGLE_CLIENT_SECRET=從GCP複製的用戶端密碼
     GOOGLE_REDIRECT_URI=http://localhost:3000/oauth2callback
+    OWNER_EMAIL=您的Gmail信箱地址
     ```
+    > **注意**：`OWNER_EMAIL` 是您的 Gmail 地址（接收預約通知的信箱）。每當有人預約成功時，Google Calendar 會自動發送 Email 通知到這個信箱，同時 Google Calendar App 也會跳出提醒通知。
 
 ### 3. 獲取 REFRESH_TOKEN
 
-Refresh Token 是允許伺服器長期存取您日曆的關鍵，需要透過一次性的手動授權來獲取。
+Refresh Token 是允許伺服器長期存取您日曆和 Gmail 的關鍵，需要透過一次性的手動授權來獲取。
 
-1.  在專案**根目錄**的終端機中，執行以下指令：
+> **⚠️ 重要提醒**：如果您之前已經取得過 Refresh Token，但在啟用 Gmail API 之前，您需要**重新執行以下步驟**來獲取包含 Gmail 權限的新 Token。
+
+1.  確認您已在 GCP 啟用 **Gmail API** 和 **Google Calendar API**
+2.  在專案**根目錄**的終端機中，執行以下指令：
     ```bash
     npx ts-node server/getRefreshToken.ts
     ```
@@ -120,6 +127,32 @@ npm run dev --prefix server
         "end": "2025-11-11T09:00:00Z" 
       } 
     ]
+    ```
+
+### `POST /create-event`
+
+-   **功能**：在 Google Calendar 中建立預約事件，並自動發送通知給網站擁有者和預約者。
+-   **參數**：
+    -   `start`: 事件開始時間 (ISO 8601 格式)
+    -   `end`: 事件結束時間 (ISO 8601 格式)
+    -   `summary`: 事件標題
+    -   `description`: 事件描述（包含預約者資訊）
+    -   `attendees`: 參與者 Email 陣列
+-   **通知機制**：
+    -   自動將 `.env` 中的 `OWNER_EMAIL` 加入為參與者，狀態設為「已接受」
+    -   將預約者的 Email 加入為參與者，狀態設為「待確認」
+    -   **透過 Gmail API 主動發送美化的 HTML 格式通知郵件給網站擁有者**（確保一定會收到通知）
+    -   設置三個提醒：預約前 1 天（Email）、預約前 30 分鐘（彈窗）、預約前 10 分鐘（Email）
+    -   郵件內容包含完整預約資訊和 Google Calendar 連結按鈕
+-   **請求範例**：
+    ```json
+    {
+      "start": "2025-11-15T14:00:00+08:00",
+      "end": "2025-11-15T15:00:00+08:00",
+      "summary": "線上諮詢 - 王小明",
+      "description": "📅 預約時間：...\n👤 預約人：王小明\n...",
+      "attendees": ["user@example.com"]
+    }
     ```
 
 ---

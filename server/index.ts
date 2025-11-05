@@ -32,6 +32,49 @@ const oAuth2Client = new google.auth.OAuth2(
 
 oAuth2Client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
 
+// Function to send notification email using Gmail API
+async function sendNotificationEmail(to: string, subject: string, body: string, eventLink: string) {
+  const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
+  
+  // Encode subject line to prevent garbled text (RFC 2047)
+  const subjectText = `🔔 新預約通知：${subject}`;
+  const encodedSubject = `=?UTF-8?B?${Buffer.from(subjectText).toString('base64')}?=`;
+  
+  // Build email content
+  const emailLines = [
+    `To: ${to}`,
+    `Subject: ${encodedSubject}`,
+    'Content-Type: text/html; charset=utf-8',
+    'MIME-Version: 1.0',
+    '',
+    '<html>',
+    '<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">',
+    '<div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb; border-radius: 8px;">',
+    '<h2 style="color: #4F46E5; margin-bottom: 20px;">🎉 您有新的預約！</h2>',
+    '<div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">',
+    '<h3 style="color: #1f2937; margin-top: 0;">預約資訊：</h3>',
+    `<pre style="font-family: Arial, sans-serif; white-space: pre-wrap; word-wrap: break-word; background-color: #f3f4f6; padding: 15px; border-radius: 6px; border-left: 4px solid #4F46E5;">${body.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`,
+    '<div style="margin-top: 30px; text-align: center;">',
+    `<a href="${eventLink}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">📅 查看 Google Calendar 事件</a>`,
+    '</div>',
+    '</div>',
+    '<p style="margin-top: 20px; font-size: 12px; color: #6b7280; text-align: center;">此郵件由個人履歷網站預約系統自動發送</p>',
+    '</div>',
+    '</body>',
+    '</html>'
+  ];
+  
+  const email = emailLines.join('\n');
+  const encodedEmail = Buffer.from(email).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  
+  await gmail.users.messages.send({
+    userId: 'me',
+    requestBody: {
+      raw: encodedEmail,
+    },
+  });
+}
+
 app.get('/', (req, res) => {
   res.send('Booking server is running!');
 });
@@ -71,7 +114,7 @@ app.get('/freebusy', async (req, res) => {
 });
 
 app.post('/create-event', async (req, res) => {
-  const { start, end, summary, description } = req.body;
+  const { start, end, summary, description, attendees } = req.body;
 
   if (!start || !end || !summary) {
     return res.status(400).send('Missing required fields: start, end, or summary');
@@ -79,27 +122,84 @@ app.post('/create-event', async (req, res) => {
 
   try {
     const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+    
+    // Prepare attendees list
+    const attendeesList = [];
+    
+    // Add the website owner's email (you) to receive notifications
+    const ownerEmail = process.env.OWNER_EMAIL;
+    console.log('📧 OWNER_EMAIL from env:', ownerEmail ? `已設置 (${ownerEmail})` : '❌ 未設置！');
+    
+    if (ownerEmail) {
+      attendeesList.push({ 
+        email: ownerEmail,
+        responseStatus: 'accepted' // Auto-accept for owner
+      });
+      console.log('✅ 已將網站擁有者加入參與者列表');
+    } else {
+      console.warn('⚠️  警告：OWNER_EMAIL 未設置，您將不會收到通知！');
+    }
+    
+    // Add the booking user's email
+    if (attendees && Array.isArray(attendees)) {
+      attendees.forEach((email: string) => {
+        attendeesList.push({ 
+          email: email,
+          responseStatus: 'needsAction' // User needs to confirm
+        });
+      });
+      console.log('✅ 已加入預約者 Email:', attendees);
+    }
+    
+    console.log('📋 最終參與者列表:', attendeesList.map(a => a.email));
+    
     const event = {
       summary: summary,
       description: description || '由個人履歷網站預約',
       start: {
         dateTime: start,
-        timeZone: 'Asia/Taipei', // You might want to make this dynamic
+        timeZone: 'Asia/Taipei',
       },
       end: {
         dateTime: end,
         timeZone: 'Asia/Taipei',
       },
+      attendees: attendeesList,
+      // Enable email reminders and notifications
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 }, // 1 day before
+          { method: 'popup', minutes: 30 },      // 30 minutes before
+          { method: 'email', minutes: 10 },      // 10 minutes before (immediate notification for new bookings)
+        ],
+      },
+      // Send notifications to attendees
+      sendUpdates: 'all', // Send email notifications to all attendees
     };
 
     const result = await calendar.events.insert({
       calendarId: 'primary',
       requestBody: event,
+      sendUpdates: 'all', // Ensure email notifications are sent
     });
 
+    console.log('🎉 事件建立成功！');
+    console.log('📅 事件連結:', result.data.htmlLink);
+    
+    // Send custom notification email to owner using Gmail API
+    if (ownerEmail && result.data.htmlLink) {
+      try {
+        await sendNotificationEmail(ownerEmail, summary, description, result.data.htmlLink);
+        console.log('📧 已透過 Gmail API 發送通知郵件給網站擁有者');
+      } catch (emailError) {
+        console.error('⚠️  發送通知郵件失敗（但事件已建立）:', emailError);
+      }
+    }
+    
     res.status(201).json(result.data);
   } catch (error) {
-    console.error('Error creating event:', error);
+    console.error('❌ 建立事件時發生錯誤:', error);
     res.status(500).send('Error creating event');
   }
 });
