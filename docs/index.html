@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' http://localhost:3000 https://booking-server-110187416117.asia-east1.run.app;">
-    <title data-i18n-key="pageTitle">王璽權 - 提供跨平台開發、AI 整合、iOS App 開發服務 | Software R&D Engineer</title>
+    <title data-i18n-key="pageTitle">王璽權 - 提供跨平台開發、AI 整合、iOS App 開發服務 | Software Engineer</title>
     <meta data-i18n-key="pageDescription" content="專業軟體工程師，提供跨平台開發、AI 整合、原生 App 開發服務。3+ 年團隊管理經驗，幫助企業降低開發成本、提升營運效率。立即聯繫獲取專業諮詢。" name="description"/>
     <meta name="keywords" content="跨平台開發,iOS App開發,AI整合,軟體開發服務,Server-Driven UI,MVVM,軟體外包,App外包"/>
     <meta property="og:title" data-i18n-key="pageTitle" content="王璽權 - 提供跨平台開發、AI 整合、iOS App 開發服務"/>
@@ -25,7 +25,7 @@
           Jason (Hsi-Chuan) Wang
         </h1>
         <p data-i18n-key="jobTitle" class="text-lg text-primary font-semibold mt-1">
-          Software R&D Engineer
+          Software Engineer
         </p>
         <p data-i18n-key="tagline" class="text-sm text-subtle-light dark:text-subtle-dark mt-2 italic">
           Delivering value, not just code.
@@ -461,13 +461,52 @@
           </button>
         </header>
         <main class="p-6 overflow-y-auto">
+          <!-- Loading State -->
           <div id="booking-loader" class="text-center py-8">
             <p data-i18n-key="bookingLoading">正在查詢可預約時段...</p>
           </div>
-          <div id="booking-content" class="hidden">
-            <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              <!-- Available time slots will be injected here by JavaScript -->
+          
+          <!-- Main Booking View -->
+          <div id="booking-view" class="hidden">
+            <!-- Calendar Section -->
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <button id="prev-month-btn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed">
+                  <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <h3 id="month-year-label" class="text-lg font-semibold text-text-light dark:text-text-dark">2025年 1月</h3>
+                <button id="next-month-btn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed">
+                  <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+              </div>
+              <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-center">
+                <!-- Calendar will be rendered here by JavaScript -->
+              </div>
             </div>
+            
+            <!-- Time Slots Section -->
+            <div>
+              <h3 id="time-slots-header" class="text-lg font-semibold text-text-light dark:text-text-dark mb-3">選擇時間</h3>
+              <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <!-- Available time slots will be injected here by JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Success View -->
+          <div id="booking-success-view" class="hidden text-center py-8">
+            <span class="material-symbols-outlined text-green-500 !text-6xl mb-4">check_circle</span>
+            <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2">預約成功！</h3>
+            <p class="text-subtle-light dark:text-subtle-dark mb-4">您的預約已經確認，我們會盡快與您聯繫。</p>
+            <a id="success-event-link" href="#" target="_blank" class="text-primary hover:underline">查看日曆活動</a>
+          </div>
+          
+          <!-- Error View -->
+          <div id="booking-error-view" class="hidden text-center py-8">
+            <span class="material-symbols-outlined text-red-500 !text-6xl mb-4">error</span>
+            <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2">預約失敗</h3>
+            <p id="error-message-text" class="text-subtle-light dark:text-subtle-dark mb-4">發生錯誤，請稍後再試。</p>
+            <button id="booking-retry-btn" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg">重試</button>
           </div>
         </main>
         <footer id="booking-footer" class="p-5 border-t border-gray-200 dark:border-gray-700 text-center hidden">

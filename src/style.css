@@ -1,4 +1,3 @@
-
 .material-symbols-outlined {
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
@@ -11,8 +10,7 @@
   transition: max-height 0.5s ease-out;
 }
 .about-me-content.expanded {
-  max-height: 500px;transition: max-height 0.7s ease-in;}
-.skill-bubble {
+  max-height: 500px;transition: max-height 0.7s ease-in;}.skill-bubble {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -131,15 +129,44 @@ body {
 }
 
 .time-slot {
-    @apply bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg p-3 text-center cursor-pointer transition-all duration-200;
+    background-color: #e5e7eb;
+    color: #6b7280;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    text-align: center;
+    cursor: not-allowed;
+    transition: all 0.2s;
+}
+
+.dark .time-slot {
+    background-color: #374151;
+    color: #d1d5db;
 }
 
 .time-slot.available {
-    @apply bg-primary/10 text-primary hover:bg-primary/20 hover:font-bold;
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4F46E5;
+    cursor: pointer;
+}
+
+.time-slot.available:hover {
+    background-color: rgba(79, 70, 229, 0.2);
+    font-weight: 700;
+    transform: scale(1.05);
 }
 
 .time-slot.selected {
-    @apply bg-primary text-white font-bold ring-2 ring-offset-2 ring-offset-card-light dark:ring-offset-card-dark ring-primary;
+    background-color: #4F46E5;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #4F46E5;
+    transform: scale(1.05);
+}
+
+.dark .time-slot.selected {
+    background-color: #6366F1;
+    color: white;
+    box-shadow: 0 0 0 2px #27272A, 0 0 0 4px #6366F1;
 }
 
 #booking-loader .loader {
@@ -160,4 +187,90 @@ body {
     100% {
         transform: rotate(360deg);
     }
+}
+
+/* Calendar Styles */
+.calendar-day-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748B;
+}
+
+.dark .calendar-day-name {
+  color: #A1A1AA;
+}
+
+.calendar-day {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+}
+
+.calendar-day.disabled {
+  color: #9ca3af;
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.dark .calendar-day.disabled {
+  color: #6b7280;
+  background-color: #1f2937;
+}
+
+.calendar-day.available {
+  background-color: rgba(79, 70, 229, 0.1);
+  color: #4F46E5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.calendar-day.available:hover {
+  background-color: rgba(79, 70, 229, 0.2);
+  transform: scale(1.1);
+}
+
+/* Dot indicator for available days */
+.calendar-day.available::after {
+  content: '';
+  width: 0.375rem;
+  height: 0.375rem;
+  background-color: #4F46E5;
+  border-radius: 9999px;
+  position: absolute;
+  bottom: 0.375rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.calendar-day.selected {
+  background-color: #4F46E5;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #4F46E5;
+  transform: scale(1.05);
+}
+
+.dark .calendar-day.selected {
+  background-color: #6366F1;
+  color: white;
+  box-shadow: 0 0 0 2px #27272A, 0 0 0 4px #6366F1;
+}
+
+#time-slots-container:empty::before {
+    content: "請先從左側選擇一個可預約的日期";
+    text-align: center;
+    color: #64748B;
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+}
+
+.dark #time-slots-container:empty::before {
+    color: #A1A1AA;
 }

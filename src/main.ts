@@ -257,191 +257,296 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Booking Modal Logic ---
-  const isProduction = window.location.hostname.includes('github.io');
-  // TODO: Replace with your deployed backend URL in production
-  const API_BASE_URL = isProduction ? 'https://booking-server-110187416117.asia-east1.run.app' : 'http://localhost:3000';
-  const bookingModal = document.getElementById('booking-modal') as HTMLElement;
-  const bookingButton = document.getElementById('booking-button') as HTMLElement;
-  const bookingButtonFooter = document.getElementById('booking-button-footer') as HTMLElement;
-  const closeModalButton = document.getElementById('booking-modal-close') as HTMLElement;
-  const bookingLoader = document.getElementById('booking-loader') as HTMLElement;
-  const bookingContent = document.getElementById('booking-content') as HTMLElement;
-  const timeSlotsContainer = document.getElementById('time-slots-container') as HTMLElement;
-  const bookingFooter = document.getElementById('booking-footer') as HTMLElement;
-  const bookingConfirmationText = document.getElementById('booking-confirmation-text') as HTMLElement;
-  const confirmBookingButton = document.getElementById('confirm-booking-button') as HTMLButtonElement;
+  const API_BASE_URL = window.location.hostname.includes('github.io') 
+    ? 'https://booking-server-110187416117.asia-east1.run.app' 
+    : 'http://localhost:3000';
 
+  // Booking configuration
+  const BOOKING_DAYS_AHEAD = 30; // Number of days ahead that users can book
+
+  // State
+  let currentDisplayDate = new Date();
+  let busySlots: { start: Date, end: Date }[] = [];
+  let availableDays = new Set<string>();
+  let selectedDate: Date | null = null;
   let selectedSlot: { start: Date, end: Date } | null = null;
 
   const openModal = () => {
-    bookingModal.classList.remove('hidden');
-    bookingModal.classList.add('flex');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    fetchAndDisplayAvailableSlots();
+    const bookingModal = document.getElementById('booking-modal');
+    if (bookingModal) {
+      bookingModal.classList.remove('hidden');
+      bookingModal.classList.add('flex');
+    }
+    document.body.style.overflow = 'hidden';
+    resetModalToInitialState();
+    initBookingSystem();
   };
 
   const closeModal = () => {
-    bookingModal.classList.add('hidden');
-    bookingModal.classList.remove('flex');
+    const bookingModal = document.getElementById('booking-modal');
+    if (bookingModal) {
+      bookingModal.classList.add('hidden');
+      bookingModal.classList.remove('flex');
+    }
     document.body.style.overflow = '';
-    // Reset modal state
-    timeSlotsContainer.innerHTML = '';
-    bookingLoader.style.display = 'block';
-    bookingContent.classList.add('hidden');
-    bookingFooter.classList.add('hidden');
-    selectedSlot = null;
   };
 
-  bookingButton.addEventListener('click', openModal);
-  bookingButtonFooter.addEventListener('click', openModal);
-  closeModalButton.addEventListener('click', closeModal);
-  // Close modal if clicking on the background overlay
-  bookingModal.addEventListener('click', (e) => {
-    if (e.target === bookingModal) {
-      closeModal();
+  const resetModalToInitialState = () => {
+    selectedDate = null;
+    selectedSlot = null;
+    currentDisplayDate = new Date();
+
+    document.getElementById('booking-loader')?.classList.remove('hidden');
+    document.getElementById('booking-view')?.classList.remove('hidden');
+    document.getElementById('booking-success-view')?.classList.add('hidden');
+    document.getElementById('booking-error-view')?.classList.add('hidden');
+    document.getElementById('booking-footer')?.classList.add('hidden');
+    
+    const timeSlotsContainer = document.getElementById('time-slots-container');
+    if(timeSlotsContainer) timeSlotsContainer.innerHTML = '';
+    
+    const timeSlotsHeader = document.getElementById('time-slots-header');
+    if(timeSlotsHeader) timeSlotsHeader.textContent = '選擇時間';
+    
+    // Setup month navigation buttons
+    setupMonthButtons();
+  };
+  
+  const setupMonthButtons = () => {
+    const prevMonthBtn = document.getElementById('prev-month-btn');
+    const nextMonthBtn = document.getElementById('next-month-btn');
+    
+    if(prevMonthBtn && nextMonthBtn) {
+      // Remove existing listeners by cloning
+      const newPrevBtn = prevMonthBtn.cloneNode(true) as HTMLElement;
+      const newNextBtn = nextMonthBtn.cloneNode(true) as HTMLElement;
+      prevMonthBtn.replaceWith(newPrevBtn);
+      nextMonthBtn.replaceWith(newNextBtn);
+      
+      // Add new listeners
+      newPrevBtn.addEventListener('click', () => {
+        currentDisplayDate.setMonth(currentDisplayDate.getMonth() - 1);
+        renderCalendar();
+      });
+      
+      newNextBtn.addEventListener('click', () => {
+        currentDisplayDate.setMonth(currentDisplayDate.getMonth() + 1);
+        renderCalendar();
+      });
     }
-  });
+  };
 
-  async function fetchAndDisplayAvailableSlots() {
-    bookingLoader.style.display = 'block';
-    bookingContent.classList.add('hidden');
-    timeSlotsContainer.innerHTML = ''; // Clear previous slots
-
-    const now = new Date();
-    const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Start of today
-    const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14); // 14 days from now
-
-    const apiURL = `${API_BASE_URL}/freebusy?start=${startDate.toISOString()}&end=${endDate.toISOString()}`;
-
+  async function initBookingSystem() {
     try {
-      const response = await fetch(apiURL);
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
-      const busySlots: { start: string, end: string }[] = await response.json();
-      renderTimeSlots(startDate, endDate, busySlots);
+      const today = new Date();
+      const startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const endDate = new Date();
+      endDate.setDate(today.getDate() + BOOKING_DAYS_AHEAD);
+
+      const response = await fetch(`${API_BASE_URL}/freebusy?start=${startDate.toISOString()}&end=${endDate.toISOString()}`);
+      if (!response.ok) throw new Error(`API request failed`);
+      
+      const busySlotsISO = await response.json();
+      busySlots = busySlotsISO.map((slot: { start: string, end: string }) => ({ start: new Date(slot.start), end: new Date(slot.end) }));
+      
+      findAvailableDays(startDate, endDate);
+      renderCalendar();
+      
+      document.getElementById('booking-loader')?.classList.add('hidden');
+
     } catch (error) {
       console.error("Error fetching available slots:", error);
-      timeSlotsContainer.innerHTML = `<p class="text-red-500 col-span-full text-center">無法載入可預約時段，請稍後再試。</p>`;
-    } finally {
-      bookingLoader.style.display = 'none';
-      bookingContent.classList.remove('hidden');
+      showErrorState('無法載入可預約時段，請稍後再試。');
     }
   }
 
-  function renderTimeSlots(startDate: Date, endDate: Date, busySlots: { start: string, end: string }[]) {
-    timeSlotsContainer.innerHTML = ''; // Clear again before rendering
-    const busyIntervals = busySlots.map(slot => ({ start: new Date(slot.start), end: new Date(slot.end) }));
+  function findAvailableDays(startDate: Date, endDate: Date) {
+    availableDays.clear();
+    for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
+      const dayOfWeek = day.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) continue;
 
-    const slotDurationMinutes = 60;
-    let availableSlotsFound = false;
-
-    for (let day = new Date(startDate); day < endDate; day.setDate(day.getDate() + 1)) {
-      // Define business hours (e.g., 9 AM to 5 PM in local time)
-      const businessHoursStart = 9;
-      const businessHoursEnd = 17;
-      const dayOfWeek = day.getDay(); // Sunday = 0, Saturday = 6
-
-      // Skip weekends
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
-        continue;
-      }
-
-      const dayContainer = document.createElement('div');
-      dayContainer.className = 'col-span-full';
-      
-      const dayHeader = document.createElement('h3');
-      dayHeader.className = 'text-lg font-semibold text-text-light dark:text-text-dark mt-4 mb-2 border-b pb-2';
-      dayHeader.textContent = day.toLocaleDateString(i18n.getInitialLanguage(), { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      dayContainer.appendChild(dayHeader);
-      timeSlotsContainer.appendChild(dayContainer);
-
-      for (let hour = businessHoursStart; hour < businessHoursEnd; hour++) {
-        const slotStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour, 0, 0);
-        const slotEnd = new Date(slotStart.getTime() + slotDurationMinutes * 60 * 1000);
-
-        // Check if the slot is in the past
-        if (slotStart < new Date()) {
-          continue;
-        }
-
-        // Check for overlap with busy intervals
-        const isBusy = busyIntervals.some(busy => 
-          (slotStart < busy.end && slotEnd > busy.start)
-        );
-
-        if (!isBusy) {
-          availableSlotsFound = true;
-          const slotButton = document.createElement('button');
-          slotButton.className = 'time-slot available';
-          slotButton.textContent = slotStart.toLocaleTimeString(i18n.getInitialLanguage(), { hour: '2-digit', minute: '2-digit', hour12: false });
-          slotButton.dataset.slotStart = slotStart.toISOString();
-          slotButton.dataset.slotEnd = slotEnd.toISOString();
-
-          slotButton.addEventListener('click', () => {
-            // Remove selected class from any previously selected slot
-            const currentlySelected = timeSlotsContainer.querySelector('.time-slot.selected');
-            if (currentlySelected) {
-              currentlySelected.classList.remove('selected');
-            }
-
-            // Add selected class to the clicked slot
-            slotButton.classList.add('selected');
-            selectedSlot = { start: slotStart, end: slotEnd };
-
-            // Show footer with confirmation
-            bookingConfirmationText.textContent = `您選擇了 ${day.toLocaleDateString(i18n.getInitialLanguage(), { month: 'long', day: 'numeric' })} ${slotButton.textContent} 的時段。`;
-            bookingFooter.classList.remove('hidden');
-          });
-
-          timeSlotsContainer.appendChild(slotButton);
+      for (let hour = 9; hour < 17; hour++) {
+        if (isSlotAvailable(new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour))) {
+          availableDays.add(day.toDateString());
+          break;
         }
       }
-    }
-
-    if (!availableSlotsFound) {
-        timeSlotsContainer.innerHTML = `<p class="text-gray-500 col-span-full text-center">抱歉，未來兩週內沒有可預約的時段。</p>`;
     }
   }
 
-  confirmBookingButton.addEventListener('click', async () => {
-    if (selectedSlot) {
-      confirmBookingButton.disabled = true;
-      confirmBookingButton.textContent = '預約中...';
+  function isSlotAvailable(slotStart: Date): boolean {
+    if (slotStart < new Date()) return false;
+    const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
+    return !busySlots.some(busy => slotStart < busy.end && slotEnd > busy.start);
+  }
 
-      try {
-        const response = await fetch(`${API_BASE_URL}/create-event`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            start: selectedSlot.start.toISOString(),
-            end: selectedSlot.end.toISOString(),
-            summary: '線上諮詢預約',
-            description: '由個人履歷網站發出的預約。'
-          }),
+  function renderCalendar() {
+    const year = currentDisplayDate.getFullYear();
+    const month = currentDisplayDate.getMonth();
+    
+    const monthYearLabel = document.getElementById('month-year-label');
+    if(monthYearLabel) monthYearLabel.textContent = `${year}年 ${month + 1}月`;
+    
+    const calendarGrid = document.getElementById('calendar-grid');
+    if(!calendarGrid) return;
+    calendarGrid.innerHTML = '';
+
+    ['日', '一', '二', '三', '四', '五', '六'].forEach(day => {
+      calendarGrid.innerHTML += `<div class="calendar-day-name">${day}</div>`;
+    });
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      calendarGrid.innerHTML += `<div></div>`;
+    }
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + BOOKING_DAYS_AHEAD);
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      const date = new Date(year, month, i);
+      const dayOfWeek = date.getDay();
+      const dayCell = document.createElement('div');
+      dayCell.className = 'calendar-day';
+      dayCell.textContent = i.toString();
+
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+
+      if (date < startOfToday || date > maxDate || dayOfWeek === 0 || dayOfWeek === 6 || !availableDays.has(date.toDateString())) {
+        dayCell.classList.add('disabled');
+      } else {
+        dayCell.classList.add('available');
+        dayCell.addEventListener('click', () => {
+          selectedDate = date;
+          document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected'));
+          dayCell.classList.add('selected');
+          renderTimeSlotsForDate(date);
         });
+      }
+      if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+        dayCell.classList.add('selected');
+      }
+      calendarGrid.appendChild(dayCell);
+    }
+    updateMonthButtons();
+  }
+  
+  function updateMonthButtons() {
+      const prevMonthBtn = document.getElementById('prev-month-btn') as HTMLButtonElement;
+      const nextMonthBtn = document.getElementById('next-month-btn') as HTMLButtonElement;
+      if(!prevMonthBtn || !nextMonthBtn) return;
 
-        if (!response.ok) {
-          throw new Error('建立預約失敗');
-        }
+      const today = new Date();
+      prevMonthBtn.disabled = currentDisplayDate.getFullYear() === today.getFullYear() && currentDisplayDate.getMonth() === today.getMonth();
 
-        const event = await response.json();
-        alert(`預約成功！\n活動已建立在您的 Google 日曆中。\n活動連結：${event.htmlLink}`);
-        closeModal();
+      const maxDate = new Date();
+      maxDate.setDate(today.getDate() + BOOKING_DAYS_AHEAD);
+      nextMonthBtn.disabled = currentDisplayDate.getFullYear() === maxDate.getFullYear() && currentDisplayDate.getMonth() === maxDate.getMonth();
+  }
 
-      } catch (error) {
-        console.error('Error creating event:', error);
-        alert('抱歉，預約失敗，請稍後再試。');
-      } finally {
+  function renderTimeSlotsForDate(date: Date) {
+    const timeSlotsContainer = document.getElementById('time-slots-container');
+    const timeSlotsHeader = document.getElementById('time-slots-header');
+    if(!timeSlotsContainer || !timeSlotsHeader) return;
+
+    timeSlotsContainer.innerHTML = '';
+    timeSlotsHeader.textContent = `${date.getMonth() + 1}月 ${date.getDate()}日 可預約時間`;
+    let slotsFound = false;
+
+    for (let hour = 9; hour < 17; hour++) {
+      const slotStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour);
+      if (isSlotAvailable(slotStart)) {
+        slotsFound = true;
+        const slotButton = document.createElement('button');
+        slotButton.className = 'time-slot available';
+        slotButton.textContent = slotStart.toLocaleTimeString(i18n.getInitialLanguage(), { hour: '2-digit', minute: '2-digit', hour12: false });
+        slotButton.addEventListener('click', () => {
+          selectedSlot = { start: slotStart, end: new Date(slotStart.getTime() + 60 * 60 * 1000) };
+          document.querySelectorAll('.time-slot.selected').forEach(b => b.classList.remove('selected'));
+          slotButton.classList.add('selected');
+          const bookingConfirmationText = document.getElementById('booking-confirmation-text');
+          if(bookingConfirmationText) bookingConfirmationText.textContent = `您選擇了 ${date.toLocaleDateString(i18n.getInitialLanguage(), { month: 'long', day: 'numeric' })} ${slotButton.textContent} 的時段。`;
+          document.getElementById('booking-footer')?.classList.remove('hidden');
+        });
+        timeSlotsContainer.appendChild(slotButton);
+      }
+    }
+    if (!slotsFound) {
+        timeSlotsContainer.innerHTML = `<p class="text-subtle-light dark:text-subtle-dark col-span-full text-center mt-4">本日無可預約時段</p>`;
+    }
+  }
+
+  async function handleBookingConfirmation() {
+    if (!selectedSlot) return;
+
+    const confirmBookingButton = document.getElementById('confirm-booking-button') as HTMLButtonElement;
+    if(confirmBookingButton) {
+        confirmBookingButton.disabled = true;
+        confirmBookingButton.textContent = '預約中...';
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/create-event`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          start: selectedSlot.start.toISOString(),
+          end: selectedSlot.end.toISOString(),
+          summary: '線上諮詢預約',
+          description: '由個人履歷網站發出的預約。'
+        }),
+      });
+      if (!response.ok) throw new Error('建立預約失敗');
+      const event = await response.json();
+      showSuccessState(event.htmlLink);
+    } catch (error) {
+      console.error('Error creating event:', error);
+      showErrorState('抱歉，預約失敗，請稍後再試或直接與我聯繫。');
+    } finally {
+      if(confirmBookingButton) {
         confirmBookingButton.disabled = false;
         confirmBookingButton.textContent = '確認預約';
       }
-
-    } else {
-        alert("請先選擇一個時段。");
     }
+  }
+
+  function showSuccessState(eventLink: string) {
+      document.getElementById('booking-view')?.classList.add('hidden');
+      document.getElementById('booking-footer')?.classList.add('hidden');
+      document.getElementById('booking-error-view')?.classList.add('hidden');
+      document.getElementById('booking-success-view')?.classList.remove('hidden');
+      
+      const successLink = document.getElementById('success-event-link') as HTMLAnchorElement;
+      if(successLink) successLink.href = eventLink;
+      
+      document.getElementById('booking-done-btn')?.addEventListener('click', closeModal, { once: true });
+  }
+
+  function showErrorState(message: string) {
+      document.getElementById('booking-view')?.classList.add('hidden');
+      document.getElementById('booking-footer')?.classList.add('hidden');
+      document.getElementById('booking-success-view')?.classList.add('hidden');
+      document.getElementById('booking-error-view')?.classList.remove('hidden');
+      
+      const errorMessageText = document.getElementById('error-message-text');
+      if(errorMessageText) errorMessageText.textContent = message;
+      
+      document.getElementById('booking-retry-btn')?.addEventListener('click', () => {
+          resetModalToInitialState();
+          initBookingSystem();
+      }, { once: true });
+  }
+
+  // Set up initial event listeners
+  document.querySelectorAll('#booking-button, #booking-button-footer').forEach(btn => btn?.addEventListener('click', openModal));
+  document.getElementById('booking-modal-close')?.addEventListener('click', closeModal);
+  document.getElementById('booking-modal')?.addEventListener('click', (e) => { 
+      if ((e.target as HTMLElement).id === 'booking-modal') closeModal(); 
   });
+  document.getElementById('confirm-booking-button')?.addEventListener('click', handleBookingConfirmation);
 
 });
