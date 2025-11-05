@@ -4,7 +4,11 @@ import dotenv from 'dotenv';
 import { google } from 'googleapis';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+// Load .env file only in local development
+// In Cloud Run, environment variables are set directly
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '.env') });
+}
 
 const app = express();
 
@@ -34,6 +38,14 @@ oAuth2Client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
 
 // Function to send notification email using Gmail API
 async function sendNotificationEmail(to: string, subject: string, body: string, eventLink: string) {
+  console.log('📧 [Gmail API] 開始發送郵件...');
+  console.log('📧 [Gmail API] 收件人:', to);
+  
+  // 檢查 OAuth2 客戶端是否正確初始化
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REFRESH_TOKEN) {
+    throw new Error('Google OAuth2 憑證未完整設定');
+  }
+  
   const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
   
   // Encode subject line to prevent garbled text (RFC 2047)
@@ -67,12 +79,17 @@ async function sendNotificationEmail(to: string, subject: string, body: string, 
   const email = emailLines.join('\n');
   const encodedEmail = Buffer.from(email).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   
-  await gmail.users.messages.send({
+  console.log('📧 [Gmail API] 郵件內容已編碼，準備發送...');
+  
+  const result = await gmail.users.messages.send({
     userId: 'me',
     requestBody: {
       raw: encodedEmail,
     },
   });
+  
+  console.log('📧 [Gmail API] 郵件發送回應:', result.data);
+  return result.data;
 }
 
 app.get('/', (req, res) => {
@@ -189,11 +206,28 @@ app.post('/create-event', async (req, res) => {
     
     // Send custom notification email to owner using Gmail API
     if (ownerEmail && result.data.htmlLink) {
+      console.log('📧 準備發送通知郵件給:', ownerEmail);
       try {
         await sendNotificationEmail(ownerEmail, summary, description, result.data.htmlLink);
-        console.log('📧 已透過 Gmail API 發送通知郵件給網站擁有者');
-      } catch (emailError) {
-        console.error('⚠️  發送通知郵件失敗（但事件已建立）:', emailError);
+        console.log('✅ 已透過 Gmail API 成功發送通知郵件給網站擁有者');
+      } catch (emailError: any) {
+        console.error('❌ 發送通知郵件失敗（但事件已建立）');
+        console.error('錯誤詳情:', emailError);
+        if (emailError.response) {
+          console.error('HTTP 狀態碼:', emailError.response.status);
+          console.error('錯誤訊息:', JSON.stringify(emailError.response.data, null, 2));
+        }
+        if (emailError.message) {
+          console.error('錯誤訊息:', emailError.message);
+        }
+        // 不中斷請求，只記錄錯誤
+      }
+    } else {
+      if (!ownerEmail) {
+        console.warn('⚠️  OWNER_EMAIL 未設定，無法發送通知郵件');
+      }
+      if (!result.data.htmlLink) {
+        console.warn('⚠️  事件連結不存在，無法發送通知郵件');
       }
     }
     

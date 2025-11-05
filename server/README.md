@@ -50,7 +50,9 @@
     GOOGLE_REDIRECT_URI=http://localhost:3000/oauth2callback
     OWNER_EMAIL=您的Gmail信箱地址
     ```
-    > **注意**：`OWNER_EMAIL` 是您的 Gmail 地址（接收預約通知的信箱）。每當有人預約成功時，Google Calendar 會自動發送 Email 通知到這個信箱，同時 Google Calendar App 也會跳出提醒通知。
+    > **注意**：
+    - `OWNER_EMAIL` 是您的 Gmail 地址（接收預約通知的信箱）。每當有人預約成功時，Google Calendar 會自動發送 Email 通知到這個信箱，同時 Google Calendar App 也會跳出提醒通知。
+    - **關於 GCP_PROJECT_ID**：部署時請使用 `gcloud config set project YOUR_PROJECT_ID` 設定（一次性設定，部署腳本會自動讀取）。
 
 ### 3. 獲取 REFRESH_TOKEN
 
