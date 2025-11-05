@@ -10,6 +10,7 @@ const app = express();
 
 // Enable CORS for the frontend origin
 app.use(cors({ origin: 'http://localhost:8000' }));
+app.use(express.json()); // Middleware to parse JSON bodies
 
 const port = process.env.PORT || 3000;
 
@@ -56,6 +57,40 @@ app.get('/freebusy', async (req, res) => {
   } catch (error) {
     console.error('Error fetching free/busy times:', error);
     res.status(500).send('Error fetching free/busy times' + error);
+  }
+});
+
+app.post('/create-event', async (req, res) => {
+  const { start, end, summary, description } = req.body;
+
+  if (!start || !end || !summary) {
+    return res.status(400).send('Missing required fields: start, end, or summary');
+  }
+
+  try {
+    const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+    const event = {
+      summary: summary,
+      description: description || '由個人履歷網站預約',
+      start: {
+        dateTime: start,
+        timeZone: 'Asia/Taipei', // You might want to make this dynamic
+      },
+      end: {
+        dateTime: end,
+        timeZone: 'Asia/Taipei',
+      },
+    };
+
+    const result = await calendar.events.insert({
+      calendarId: 'primary',
+      requestBody: event,
+    });
+
+    res.status(201).json(result.data);
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.status(500).send('Error creating event');
   }
 });
 

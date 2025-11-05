@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const timeSlotsContainer = document.getElementById('time-slots-container') as HTMLElement;
   const bookingFooter = document.getElementById('booking-footer') as HTMLElement;
   const bookingConfirmationText = document.getElementById('booking-confirmation-text') as HTMLElement;
-  const confirmBookingButton = document.getElementById('confirm-booking-button') as HTMLElement;
+  const confirmBookingButton = document.getElementById('confirm-booking-button') as HTMLButtonElement;
 
   let selectedSlot: { start: Date, end: Date } | null = null;
 
@@ -627,12 +627,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  confirmBookingButton.addEventListener('click', () => {
+  confirmBookingButton.addEventListener('click', async () => {
     if (selectedSlot) {
-        alert(`預約成功！\n時間：${selectedSlot.start.toLocaleString()}`);
-        // Here you would call the backend to create the event
-        // For now, we just close the modal
+      confirmBookingButton.disabled = true;
+      confirmBookingButton.textContent = '預約中...';
+
+      try {
+        const response = await fetch('http://localhost:3000/create-event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            start: selectedSlot.start.toISOString(),
+            end: selectedSlot.end.toISOString(),
+            summary: '線上諮詢預約',
+            description: '由個人履歷網站發出的預約。'
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('建立預約失敗');
+        }
+
+        const event = await response.json();
+        alert(`預約成功！\n活動已建立在您的 Google 日曆中。\n活動連結：${event.htmlLink}`);
         closeModal();
+
+      } catch (error) {
+        console.error('Error creating event:', error);
+        alert('抱歉，預約失敗，請稍後再試。');
+      } finally {
+        confirmBookingButton.disabled = false;
+        confirmBookingButton.textContent = '確認預約';
+      }
+
     } else {
         alert("請先選擇一個時段。");
     }
