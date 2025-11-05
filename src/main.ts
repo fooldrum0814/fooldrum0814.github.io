@@ -487,6 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Booking Modal Logic ---
   const bookingModal = document.getElementById('booking-modal') as HTMLElement;
   const bookingButton = document.getElementById('booking-button') as HTMLElement;
+  const bookingButtonFooter = document.getElementById('booking-button-footer') as HTMLElement;
   const closeModalButton = document.getElementById('booking-modal-close') as HTMLElement;
   const bookingLoader = document.getElementById('booking-loader') as HTMLElement;
   const bookingContent = document.getElementById('booking-content') as HTMLElement;
@@ -517,6 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   bookingButton.addEventListener('click', openModal);
+  bookingButtonFooter.addEventListener('click', openModal);
   closeModalButton.addEventListener('click', closeModal);
   // Close modal if clicking on the background overlay
   bookingModal.addEventListener('click', (e) => {
