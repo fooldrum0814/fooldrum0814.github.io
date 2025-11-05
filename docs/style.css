@@ -11,48 +11,83 @@
   transition: max-height 0.5s ease-out;
 }
 .about-me-content.expanded {
-  max-height: 500px;transition: max-height 0.7s ease-in;}.skill-bubble {
-  position: relative;
+  max-height: 500px;transition: max-height 0.7s ease-in;}
+.skill-bubble {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem 1rem;
-  background-color: var(--primary-color);color: white;
-  border-radius: 9999px;font-weight: 600;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 9999px;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
+
 .skill-bubble:hover {
   transform: translateY(-2px);
 }
+
+.skill-bubble.active {
+  background-color: #3730a3; /* A darker shade for active state */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Hide original sub-skills, we'll read content from them */
 .sub-skills {
   display: none;
-  position: fixed;
-  background-color: var(--card-light);
-  color: var(--text-light);
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  max-width: min(400px, calc(100vw - 2rem));
-  min-width: 150px;
-  white-space: normal;
-  word-wrap: break-word;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 9999;
+}
+
+.skill-details-container {
+  flex-basis: 100%;
+  width: 100%;
+  transform-origin: top;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scaleY(0.95) translateY(-10px);
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
   pointer-events: none;
 }
-.dark .sub-skills {
-  background-color: var(--card-dark);color: var(--text-dark);}
-.skill-bubble:hover .sub-skills,
-.skill-bubble.active .sub-skills {
-  display: block;
+
+.skill-details-container.expanded {
+  transform: scaleY(1) translateY(0);
   opacity: 1;
   pointer-events: auto;
+}
+
+.skill-details-inner {
+  padding: 1.5rem;
+  margin: 0.75rem auto 0; /* top margin corresponds to gap-3 */
+  width: 100%;
+  max-width: 42rem; /* Same as md breakpoint, looks better on wide screens */
+  background-color: var(--card-light);
+  border-radius: 0.75rem; /* Slightly larger radius */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), inset 0 2px 4px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 0.75rem; /* gap between items */
+}
+
+.dark .skill-details-inner {
+  background-color: var(--card-dark);
+}
+
+.sub-skill-item {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: rgba(79, 70, 229, 0.1); /* primary/10 */
+  color: var(--primary-color);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.dark .sub-skill-item {
+  background-color: rgba(79, 70, 229, 0.2); /* primary/20 */
 }
 @layer base {
   :root {
