@@ -453,7 +453,7 @@
 
     <!-- Booking Modal -->
     <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-      <div class="bg-card-light dark:bg-card-dark rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+      <div class="bg-card-light dark:bg-card-dark rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
         <header class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
           <h2 data-i18n-key="bookingModalTitle" class="text-xl font-bold text-text-light dark:text-text-dark">預約諮詢</h2>
           <button id="booking-modal-close" class="text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary">
@@ -486,8 +486,8 @@
             
             <!-- Time Slots Section -->
             <div>
-              <h3 id="time-slots-header" class="text-lg font-semibold text-text-light dark:text-text-dark mb-3">選擇時間</h3>
-              <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              <h3 id="time-slots-header" data-i18n-key="bookingSelectTime" class="text-lg font-semibold text-text-light dark:text-text-dark mb-3">選擇時間</h3>
+              <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" data-empty-text="請先從上方日曆選擇一個可預約的日期">
                 <!-- Available time slots will be injected here by JavaScript -->
               </div>
             </div>
@@ -496,22 +496,103 @@
           <!-- Success View -->
           <div id="booking-success-view" class="hidden text-center py-8">
             <span class="material-symbols-outlined text-green-500 !text-6xl mb-4">check_circle</span>
-            <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2">預約成功！</h3>
-            <p class="text-subtle-light dark:text-subtle-dark mb-4">您的預約已經確認，我們會盡快與您聯繫。</p>
-            <a id="success-event-link" href="#" target="_blank" class="text-primary hover:underline">查看日曆活動</a>
+            <h3 data-i18n-key="bookingSuccessTitle" class="text-xl font-bold text-text-light dark:text-text-dark mb-2">預約成功！</h3>
+            <p data-i18n-key="bookingSuccessMessage" class="text-subtle-light dark:text-subtle-dark mb-4">您的預約已經確認，我們會盡快與您聯繫。</p>
+            <a id="success-event-link" href="#" target="_blank" data-i18n-key="bookingViewEvent" class="text-primary hover:underline">查看日曆活動</a>
           </div>
           
           <!-- Error View -->
           <div id="booking-error-view" class="hidden text-center py-8">
             <span class="material-symbols-outlined text-red-500 !text-6xl mb-4">error</span>
-            <h3 class="text-xl font-bold text-text-light dark:text-text-dark mb-2">預約失敗</h3>
+            <h3 data-i18n-key="bookingErrorTitle" class="text-xl font-bold text-text-light dark:text-text-dark mb-2">預約失敗</h3>
             <p id="error-message-text" class="text-subtle-light dark:text-subtle-dark mb-4">發生錯誤，請稍後再試。</p>
-            <button id="booking-retry-btn" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg">重試</button>
+            <button id="booking-retry-btn" data-i18n-key="bookingRetry" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg">重試</button>
           </div>
         </main>
-        <footer id="booking-footer" class="p-5 border-t border-gray-200 dark:border-gray-700 text-center hidden">
-            <p id="booking-confirmation-text" class="text-sm text-subtle-light dark:text-subtle-dark mb-4"></p>
-            <button id="confirm-booking-button" data-i18n-key="confirmBookingButton" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg w-full sm:w-auto">確認預約</button>
+        <footer id="booking-footer" class="p-5 border-t border-gray-200 dark:border-gray-700 hidden">
+            <p id="booking-confirmation-text" class="text-sm text-subtle-light dark:text-subtle-dark mb-4 text-center"></p>
+            
+            <!-- Form Error Message -->
+            <div id="form-error-message" class="hidden mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-red-500 text-lg mt-0.5">error</span>
+                <div class="flex-1">
+                  <p id="form-error-title" data-i18n-key="bookingValidationErrorTitle" class="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">表單填寫有誤</p>
+                  <ul id="form-error-list" class="text-xs text-red-700 dark:text-red-300 list-disc list-inside space-y-0.5"></ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Contact Information Form -->
+            <form id="booking-form" class="space-y-4 mb-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Name Field -->
+                <div class="form-group">
+                  <label for="booking-name" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
+                    <span data-i18n-key="bookingName">姓名</span> <span data-i18n-key="bookingRequired" class="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="booking-name" 
+                    name="name"
+                    required
+                    data-i18n-placeholder="bookingNamePlaceholder"
+                    placeholder="請輸入您的姓名"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  >
+                </div>
+                
+                <!-- Email Field -->
+                <div class="form-group">
+                  <label for="booking-email" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
+                    <span data-i18n-key="bookingEmail">Email</span> <span data-i18n-key="bookingRequired" class="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    id="booking-email" 
+                    name="email"
+                    required
+                    data-i18n-placeholder="bookingEmailPlaceholder"
+                    placeholder="your@email.com"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  >
+                </div>
+              </div>
+              
+              <!-- Phone Field -->
+              <div class="form-group">
+                <label for="booking-phone" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
+                  <span data-i18n-key="bookingPhone">聯絡電話</span>
+                </label>
+                <input 
+                  type="tel" 
+                  id="booking-phone" 
+                  name="phone"
+                  data-i18n-placeholder="bookingPhonePlaceholder"
+                  placeholder="0912-345-678（選填）"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                >
+              </div>
+              
+              <!-- Topic/Message Field -->
+              <div class="form-group">
+                <label for="booking-topic" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
+                  <span data-i18n-key="bookingTopic">諮詢主題</span>
+                </label>
+                <textarea 
+                  id="booking-topic" 
+                  name="topic"
+                  rows="3"
+                  data-i18n-placeholder="bookingTopicPlaceholder"
+                  placeholder="簡短描述您想諮詢的內容（選填）"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                ></textarea>
+              </div>
+            </form>
+            
+            <button id="confirm-booking-button" data-i18n-key="confirmBookingButton" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg w-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+              確認預約
+            </button>
         </footer>
       </div>
     </div>

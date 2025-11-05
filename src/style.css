@@ -128,6 +128,27 @@ body {
     display: none;
 }
 
+/* Modal content area with smooth height transition */
+#booking-modal main {
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Footer slide animation */
+#booking-footer {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(-10px);
+}
+
+#booking-footer:not(.hidden) {
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+    overflow: visible;
+}
+
 .time-slot {
     background-color: #e5e7eb;
     color: #6b7280;
@@ -136,7 +157,29 @@ body {
     text-align: center;
     cursor: not-allowed;
     transition: all 0.2s;
+    opacity: 0;
+    animation: fadeInSlot 0.3s ease-out forwards;
 }
+
+@keyframes fadeInSlot {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.time-slot:nth-child(1) { animation-delay: 0.05s; }
+.time-slot:nth-child(2) { animation-delay: 0.1s; }
+.time-slot:nth-child(3) { animation-delay: 0.15s; }
+.time-slot:nth-child(4) { animation-delay: 0.2s; }
+.time-slot:nth-child(5) { animation-delay: 0.25s; }
+.time-slot:nth-child(6) { animation-delay: 0.3s; }
+.time-slot:nth-child(7) { animation-delay: 0.35s; }
+.time-slot:nth-child(8) { animation-delay: 0.4s; }
 
 .dark .time-slot {
     background-color: #374151;
@@ -264,7 +307,7 @@ body {
 }
 
 #time-slots-container:empty::before {
-    content: "請先從左側選擇一個可預約的日期";
+    content: attr(data-empty-text);
     text-align: center;
     color: #64748B;
     grid-column: 1 / -1;
@@ -273,4 +316,96 @@ body {
 
 .dark #time-slots-container:empty::before {
     color: #A1A1AA;
+}
+
+/* Form Error Message Styles */
+#form-error-message {
+    animation: slideInError 0.3s ease-out;
+}
+
+@keyframes slideInError {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#form-error-message.hidden {
+    animation: slideOutError 0.3s ease-out;
+}
+
+@keyframes slideOutError {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Booking Form Styles */
+#booking-form {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+#booking-footer.hidden #booking-form {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+#booking-footer:not(.hidden) #booking-form {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#booking-form input,
+#booking-form textarea {
+    transition: all 0.2s ease;
+}
+
+#booking-form input:focus,
+#booking-form textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);
+}
+
+#booking-form input.border-red-500,
+#booking-form textarea.border-red-500 {
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+#booking-form label {
+    transition: color 0.2s ease;
+}
+
+#booking-form input:focus + label,
+#booking-form textarea:focus + label {
+    color: #4F46E5;
+}
+
+/* Form group styling */
+.form-group {
+    position: relative;
+}
+
+.form-group input:valid:not(:placeholder-shown),
+.form-group textarea:valid:not(:placeholder-shown) {
+    border-color: #10b981;
+}
+
+.form-group input:invalid:not(:placeholder-shown),
+.form-group textarea:invalid:not(:placeholder-shown) {
+    border-color: #ef4444;
 }

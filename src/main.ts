@@ -52,6 +52,31 @@ document.addEventListener('DOMContentLoaded', () => {
           console.warn(`Translation key "${key}" not found for language "${language}"`);
         }
       });
+      
+      // Handle placeholder translations
+      const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+      placeholderElements.forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (key && this.translations[language][key]) {
+          (element as HTMLInputElement | HTMLTextAreaElement).placeholder = this.translations[language][key];
+        }
+      });
+      
+      // Update time-slots-container empty state text
+      const timeSlotsContainer = document.getElementById('time-slots-container');
+      if (timeSlotsContainer) {
+        const selectDateFirstText = this.translations[language]?.['bookingSelectDateFirst'] || '請先從上方日曆選擇一個可預約的日期';
+        timeSlotsContainer.setAttribute('data-empty-text', selectDateFirstText);
+      }
+      
+      // Re-render calendar if modal is open to update month/year and weekday names
+      const bookingModal = document.getElementById('booking-modal');
+      if (bookingModal && !bookingModal.classList.contains('hidden')) {
+        // Check if renderCalendar function exists (it's defined after DOMContentLoaded)
+        if (typeof (window as any).renderCalendarForLanguageSwitch === 'function') {
+          (window as any).renderCalendarForLanguageSwitch();
+        }
+      }
     },
 
     getInitialLanguage(): string {
@@ -306,7 +331,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if(timeSlotsContainer) timeSlotsContainer.innerHTML = '';
     
     const timeSlotsHeader = document.getElementById('time-slots-header');
-    if(timeSlotsHeader) timeSlotsHeader.textContent = '選擇時間';
+    const currentLang = i18n.getInitialLanguage();
+    if(timeSlotsHeader) timeSlotsHeader.textContent = i18n.translations[currentLang]?.['bookingSelectTime'] || '選擇時間';
+    
+    // Reset form
+    const bookingForm = document.getElementById('booking-form') as HTMLFormElement;
+    if(bookingForm) bookingForm.reset();
+    
+    // Hide form errors
+    hideFormErrors();
+    
+    // Clear error states
+    document.getElementById('booking-name')?.classList.remove('border-red-500');
+    document.getElementById('booking-email')?.classList.remove('border-red-500');
+    document.getElementById('booking-phone')?.classList.remove('border-red-500');
     
     // Setup month navigation buttons
     setupMonthButtons();
@@ -384,15 +422,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderCalendar() {
     const year = currentDisplayDate.getFullYear();
     const month = currentDisplayDate.getMonth();
+    const currentLang = i18n.getInitialLanguage();
     
     const monthYearLabel = document.getElementById('month-year-label');
-    if(monthYearLabel) monthYearLabel.textContent = `${year}年 ${month + 1}月`;
+    if(monthYearLabel) {
+      if(currentLang === 'en') {
+        // Format: December 2025
+        monthYearLabel.textContent = currentDisplayDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+      } else {
+        // Format: 2025年 12月
+        monthYearLabel.textContent = `${year}年 ${month + 1}月`;
+      }
+    }
     
     const calendarGrid = document.getElementById('calendar-grid');
     if(!calendarGrid) return;
     calendarGrid.innerHTML = '';
 
-    ['日', '一', '二', '三', '四', '五', '六'].forEach(day => {
+    // Week day names based on language
+    const weekDays = currentLang === 'en' 
+      ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      : ['日', '一', '二', '三', '四', '五', '六'];
+    
+    weekDays.forEach(day => {
       calendarGrid.innerHTML += `<div class="calendar-day-name">${day}</div>`;
     });
 
@@ -422,8 +474,16 @@ document.addEventListener('DOMContentLoaded', () => {
         dayCell.classList.add('available');
         dayCell.addEventListener('click', () => {
           selectedDate = date;
+          selectedSlot = null; // Reset selected slot when changing date
           document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected'));
           dayCell.classList.add('selected');
+          
+          // Hide footer with form when switching dates
+          const footer = document.getElementById('booking-footer');
+          if(footer && !footer.classList.contains('hidden')) {
+            footer.classList.add('hidden');
+          }
+          
           renderTimeSlotsForDate(date);
         });
       }
@@ -454,7 +514,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!timeSlotsContainer || !timeSlotsHeader) return;
 
     timeSlotsContainer.innerHTML = '';
-    timeSlotsHeader.textContent = `${date.getMonth() + 1}月 ${date.getDate()}日 可預約時間`;
+    const currentLang = i18n.getInitialLanguage();
+    
+    // Set empty state text
+    const selectDateFirstText = i18n.translations[currentLang]?.['bookingSelectDateFirst'] || '請先從上方日曆選擇一個可預約的日期';
+    timeSlotsContainer.setAttribute('data-empty-text', selectDateFirstText);
+    
+    const availableSlotsText = i18n.translations[currentLang]?.['bookingAvailableSlots'] || '可預約時間';
+    const dateStr = currentLang === 'en' 
+      ? date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
+      : `${date.getMonth() + 1}月 ${date.getDate()}日`;
+    timeSlotsHeader.textContent = `${dateStr} ${availableSlotsText}`;
     let slotsFound = false;
 
     for (let hour = 9; hour < 17; hour++) {
@@ -469,35 +539,158 @@ document.addEventListener('DOMContentLoaded', () => {
           document.querySelectorAll('.time-slot.selected').forEach(b => b.classList.remove('selected'));
           slotButton.classList.add('selected');
           const bookingConfirmationText = document.getElementById('booking-confirmation-text');
-          if(bookingConfirmationText) bookingConfirmationText.textContent = `您選擇了 ${date.toLocaleDateString(i18n.getInitialLanguage(), { month: 'long', day: 'numeric' })} ${slotButton.textContent} 的時段。`;
+          const currentLang = i18n.getInitialLanguage();
+          const selectedText = i18n.translations[currentLang]?.['bookingSelectedSlot'] || '您選擇了';
+          const dateStr = date.toLocaleDateString(currentLang, { month: 'long', day: 'numeric' });
+          if(bookingConfirmationText) bookingConfirmationText.textContent = `${selectedText} ${dateStr} ${slotButton.textContent}`;
           document.getElementById('booking-footer')?.classList.remove('hidden');
         });
         timeSlotsContainer.appendChild(slotButton);
       }
     }
     if (!slotsFound) {
-        timeSlotsContainer.innerHTML = `<p class="text-subtle-light dark:text-subtle-dark col-span-full text-center mt-4">本日無可預約時段</p>`;
+        const currentLang = i18n.getInitialLanguage();
+        const noSlotsText = i18n.translations[currentLang]?.['bookingNoSlots'] || '本日無可預約時段';
+        timeSlotsContainer.innerHTML = `<p class="text-subtle-light dark:text-subtle-dark col-span-full text-center mt-4">${noSlotsText}</p>`;
     }
+  }
+
+  function showFormErrors(errors: string[]) {
+    const errorMessage = document.getElementById('form-error-message');
+    const errorList = document.getElementById('form-error-list');
+    
+    if (errorMessage && errorList) {
+      errorList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+      errorMessage.classList.remove('hidden');
+      
+      // Scroll to error message
+      errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        errorMessage.classList.add('hidden');
+      }, 5000);
+    }
+  }
+  
+  function hideFormErrors() {
+    const errorMessage = document.getElementById('form-error-message');
+    if (errorMessage) {
+      errorMessage.classList.add('hidden');
+    }
+  }
+
+  function validateBookingForm(): { isValid: boolean; data?: any; errors?: string[] } {
+    const form = document.getElementById('booking-form') as HTMLFormElement;
+    const nameInput = document.getElementById('booking-name') as HTMLInputElement;
+    const emailInput = document.getElementById('booking-email') as HTMLInputElement;
+    const phoneInput = document.getElementById('booking-phone') as HTMLInputElement;
+    const topicInput = document.getElementById('booking-topic') as HTMLTextAreaElement;
+    
+    const errors: string[] = [];
+    const currentLang = i18n.getInitialLanguage();
+    
+    // Clear all previous error states
+    nameInput?.classList.remove('border-red-500');
+    emailInput?.classList.remove('border-red-500');
+    phoneInput?.classList.remove('border-red-500');
+    
+    // Validate name
+    const name = nameInput?.value.trim();
+    if (!name) {
+      errors.push(i18n.translations[currentLang]?.['bookingValidationNameRequired'] || '請輸入您的姓名');
+      nameInput?.classList.add('border-red-500');
+    }
+    
+    // Validate email
+    const email = emailInput?.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      errors.push(i18n.translations[currentLang]?.['bookingValidationEmailRequired'] || '請輸入您的 Email');
+      emailInput?.classList.add('border-red-500');
+    } else if (!emailRegex.test(email)) {
+      errors.push(i18n.translations[currentLang]?.['bookingValidationEmailInvalid'] || '請輸入有效的 Email 格式');
+      emailInput?.classList.add('border-red-500');
+    }
+    
+    // Validate phone (optional, but if filled must be valid)
+    const phone = phoneInput?.value.trim();
+    if (phone) {
+      // Taiwan phone number format: 09XX-XXX-XXX or 09XXXXXXXX
+      // Also accept international format: +886-9XX-XXX-XXX
+      const phoneRegex = /^(\+886[-\s]?)?0?9\d{2}[-\s]?\d{3}[-\s]?\d{3}$/;
+      if (!phoneRegex.test(phone)) {
+        errors.push(i18n.translations[currentLang]?.['bookingValidationPhoneInvalid'] || '請輸入有效的電話號碼格式');
+        phoneInput?.classList.add('border-red-500');
+      }
+    }
+    
+    if (errors.length > 0) {
+      return { isValid: false, errors };
+    }
+    
+    return {
+      isValid: true,
+      data: {
+        name,
+        email,
+        phone: phone || '',
+        topic: topicInput?.value.trim() || ''
+      }
+    };
   }
 
   async function handleBookingConfirmation() {
     if (!selectedSlot) return;
+    
+    // Validate form
+    const validation = validateBookingForm();
+    if (!validation.isValid) {
+      showFormErrors(validation.errors || []);
+      return;
+    }
+    
+    // Hide any previous errors
+    hideFormErrors();
+    
+    const { name, email, phone, topic } = validation.data;
 
     const confirmBookingButton = document.getElementById('confirm-booking-button') as HTMLButtonElement;
+    const currentLang = i18n.getInitialLanguage();
     if(confirmBookingButton) {
         confirmBookingButton.disabled = true;
-        confirmBookingButton.textContent = '預約中...';
+        confirmBookingButton.textContent = i18n.translations[currentLang]?.['bookingSubmitting'] || '預約中...';
     }
 
     try {
+      // Build event description with contact info
+      const dateTimeStr = selectedSlot.start.toLocaleString('zh-TW', { 
+        year: 'numeric',
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      
+      let description = `📅 預約時間：${dateTimeStr}\n\n`;
+      description += `👤 預約人：${name}\n`;
+      description += `📧 Email：${email}\n`;
+      if (phone) description += `📱 電話：${phone}\n`;
+      if (topic) description += `\n💬 諮詢主題：\n${topic}\n`;
+      description += `\n---\n由個人履歷網站預約系統發出`;
+      
+      const summary = `線上諮詢 - ${name}`;
+
       const response = await fetch(`${API_BASE_URL}/create-event`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           start: selectedSlot.start.toISOString(),
           end: selectedSlot.end.toISOString(),
-          summary: '線上諮詢預約',
-          description: '由個人履歷網站發出的預約。'
+          summary: summary,
+          description: description,
+          attendees: [email]
         }),
       });
       if (!response.ok) throw new Error('建立預約失敗');
@@ -509,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } finally {
       if(confirmBookingButton) {
         confirmBookingButton.disabled = false;
-        confirmBookingButton.textContent = '確認預約';
+        confirmBookingButton.textContent = i18n.translations[currentLang]?.['confirmBookingButton'] || '確認預約';
       }
     }
   }
@@ -526,14 +719,15 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('booking-done-btn')?.addEventListener('click', closeModal, { once: true });
   }
 
-  function showErrorState(message: string) {
+  function showErrorState(message?: string) {
       document.getElementById('booking-view')?.classList.add('hidden');
       document.getElementById('booking-footer')?.classList.add('hidden');
       document.getElementById('booking-success-view')?.classList.add('hidden');
       document.getElementById('booking-error-view')?.classList.remove('hidden');
       
+      const currentLang = i18n.getInitialLanguage();
       const errorMessageText = document.getElementById('error-message-text');
-      if(errorMessageText) errorMessageText.textContent = message;
+      if(errorMessageText) errorMessageText.textContent = message || i18n.translations[currentLang]?.['bookingErrorMessage'] || '發生錯誤，請稍後再試。';
       
       document.getElementById('booking-retry-btn')?.addEventListener('click', () => {
           resetModalToInitialState();
@@ -548,5 +742,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if ((e.target as HTMLElement).id === 'booking-modal') closeModal(); 
   });
   document.getElementById('confirm-booking-button')?.addEventListener('click', handleBookingConfirmation);
+  
+  // Expose renderCalendar to window for language switch
+  (window as any).renderCalendarForLanguageSwitch = renderCalendar;
 
 });
