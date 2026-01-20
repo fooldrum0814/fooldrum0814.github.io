@@ -535,16 +535,16 @@ body {
     overflow: hidden;
 }
 
-/* 液態光澤層 */
+/* 液態光澤層 - iOS 風格靜態高光 */
 .glass-card::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.4) 0%,
-        rgba(255, 255, 255, 0.1) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0.2) 25%,
+        transparent 50%
     );
     border-radius: inherit;
     pointer-events: none;
@@ -557,6 +557,13 @@ body {
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(255, 255, 255, 0.15) 100%
+    );
     box-shadow:
         inset 1px 1px 0 rgba(255, 255, 255, 0.8),
         inset -1px -1px 0 rgba(255, 255, 255, 0.2);
@@ -586,9 +593,9 @@ body {
 .dark .glass-card::before {
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.05) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.08) 25%,
+        transparent 50%
     );
 }
 
@@ -697,16 +704,16 @@ body {
     overflow: hidden;
 }
 
-/* 液態光澤層 */
+/* 液態光澤層 - iOS 風格靜態高光 */
 .glass-header::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.5) 0%,
-        rgba(255, 255, 255, 0.15) 35%,
-        transparent 55%
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.25) 20%,
+        transparent 45%
     );
     border-radius: inherit;
     pointer-events: none;
@@ -719,6 +726,13 @@ body {
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.6) 0%,
+        transparent 35%,
+        transparent 65%,
+        rgba(255, 255, 255, 0.2) 100%
+    );
     box-shadow:
         inset 2px 2px 0 rgba(255, 255, 255, 0.9),
         inset -1px -1px 0 rgba(255, 255, 255, 0.3);
@@ -739,9 +753,9 @@ body {
 .dark .glass-header::before {
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.05) 35%,
-        transparent 55%
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.1) 20%,
+        transparent 45%
     );
 }
 
@@ -788,16 +802,16 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* 液態光澤層 */
+/* 液態光澤層 - iOS 風格靜態高光 */
 .glass-service-card::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.45) 0%,
-        rgba(255, 255, 255, 0.12) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.55) 0%,
+        rgba(255, 255, 255, 0.2) 25%,
+        transparent 50%
     );
     border-radius: inherit;
     pointer-events: none;
@@ -810,6 +824,13 @@ body {
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.55) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(255, 255, 255, 0.18) 100%
+    );
     box-shadow:
         inset 1px 1px 0 rgba(255, 255, 255, 0.85),
         inset -1px -1px 0 rgba(255, 255, 255, 0.25);
@@ -839,9 +860,9 @@ body {
 .dark .glass-service-card::before {
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.18) 0%,
-        rgba(255, 255, 255, 0.05) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(255, 255, 255, 0.08) 25%,
+        transparent 50%
     );
 }
 
@@ -916,26 +937,35 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* 液態光澤層 - iOS 風格靜態高光 */
 .glass-project-card::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.4) 0%,
-        rgba(255, 255, 255, 0.1) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0.2) 25%,
+        transparent 50%
     );
     border-radius: inherit;
     pointer-events: none;
     z-index: 1;
 }
 
+/* 邊緣光澤 */
 .glass-project-card::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(255, 255, 255, 0.15) 100%
+    );
     box-shadow:
         inset 1px 1px 0 rgba(255, 255, 255, 0.8),
         inset -1px -1px 0 rgba(255, 255, 255, 0.2);
@@ -965,9 +995,9 @@ body {
 .dark .glass-project-card::before {
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.05) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.08) 25%,
+        transparent 50%
     );
 }
 
@@ -1372,26 +1402,35 @@ body {
     overflow: hidden;
 }
 
+/* 液態光澤層 - iOS 風格靜態高光 */
 .glass-about::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.4) 0%,
-        rgba(255, 255, 255, 0.1) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0.2) 25%,
+        transparent 50%
     );
     border-radius: inherit;
     pointer-events: none;
     z-index: 1;
 }
 
+/* 邊緣光澤 */
 .glass-about::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(255, 255, 255, 0.15) 100%
+    );
     box-shadow:
         inset 1px 1px 0 rgba(255, 255, 255, 0.8),
         inset -1px -1px 0 rgba(255, 255, 255, 0.2);
@@ -1420,9 +1459,9 @@ body {
 .dark .glass-about::before {
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.05) 40%,
-        transparent 60%
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.08) 25%,
+        transparent 50%
     );
 }
 
