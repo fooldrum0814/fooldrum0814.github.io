@@ -123,134 +123,60 @@ document.addEventListener('DOMContentLoaded', () => {
             aboutMeArrow.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
         });
     }
-    // Logic for the skill bubbles
-    const skillsContainer = document.querySelector('.flex.flex-wrap.justify-center.gap-3');
-    if (skillsContainer) {
-        const skillBubbles = Array.from(skillsContainer.querySelectorAll('.skill-bubble'));
-        let activeBubble = null;
-        let detailsContainer = null;
-        let isAnimating = false;
-        const getRows = () => {
-            const rows = [];
-            if (skillBubbles.length === 0)
-                return { rows, bubbleToRowMap: new Map() };
-            const sortedBubbles = [...skillBubbles].sort((a, b) => {
-                const rectA = a.getBoundingClientRect();
-                const rectB = b.getBoundingClientRect();
-                if (Math.abs(rectA.top - rectB.top) > 10)
-                    return rectA.top - rectB.top;
-                return rectA.left - rectB.left;
-            });
-            const bubbleToRowMap = new Map();
-            if (sortedBubbles.length > 0) {
-                let currentRow = [sortedBubbles[0]];
-                rows.push(currentRow);
-                bubbleToRowMap.set(sortedBubbles[0], currentRow);
-                for (let i = 1; i < sortedBubbles.length; i++) {
-                    const bubble = sortedBubbles[i];
-                    const prevBubble = sortedBubbles[i - 1];
-                    if (Math.abs(bubble.getBoundingClientRect().top - prevBubble.getBoundingClientRect().top) < 10) {
-                        currentRow.push(bubble);
-                    }
-                    else {
-                        currentRow = [bubble];
-                        rows.push(currentRow);
-                    }
-                    bubbleToRowMap.set(bubble, currentRow);
+    // Logic for the skill cards - simple toggle
+    const skillsGrid = document.getElementById('skills-grid');
+    if (skillsGrid) {
+        const skillCards = skillsGrid.querySelectorAll('.skill-card');
+        let expandedDetails = null;
+        let activeCard = null;
+
+        skillCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const wasActive = card === activeCard;
+
+                // Close any existing expanded details
+                if (expandedDetails) {
+                    expandedDetails.remove();
+                    expandedDetails = null;
                 }
-            }
-            return { rows, bubbleToRowMap };
-        };
-        const openDetails = (bubble) => {
-            activeBubble = bubble;
-            bubble.classList.add('active');
-            detailsContainer = document.createElement('div');
-            detailsContainer.className = 'skill-details-container';
-            const subSkillsText = bubble.querySelector('.sub-skills')?.textContent || '';
-            const subSkillsItems = subSkillsText.split(/, | • /).map(item => item.trim()).filter(Boolean);
-            detailsContainer.innerHTML = `<div class="skill-details-inner">${subSkillsItems.map(item => `<span class="sub-skill-item">${item}</span>`).join('')}</div>`;
-            const { bubbleToRowMap } = getRows();
-            const clickedRow = bubbleToRowMap.get(bubble);
-            if (clickedRow) {
-                const lastElementInRow = clickedRow[clickedRow.length - 1];
-                lastElementInRow.after(detailsContainer);
-            }
-            requestAnimationFrame(() => {
-                if (detailsContainer) {
-                    const containerToOpen = detailsContainer;
-                    const onEnd = () => {
-                        containerToOpen.removeEventListener('transitionend', onEnd);
-                        clearTimeout(timeoutId);
-                        isAnimating = false;
-                    };
-                    containerToOpen.addEventListener('transitionend', onEnd);
-                    const timeoutId = setTimeout(onEnd, 500); // Failsafe timeout (animation is 400ms)
-                    containerToOpen.classList.add('expanded');
-                }
-            });
-        };
-        skillBubbles.forEach(bubble => {
-            bubble.addEventListener('click', async (event) => {
-                event.stopPropagation();
-                if (isAnimating)
-                    return;
-                const isCurrentlyActive = bubble === activeBubble;
-                isAnimating = true;
-                if (detailsContainer) {
-                    const containerToClose = detailsContainer;
-                    const transitionPromise = new Promise(resolve => {
-                        const onEnd = () => {
-                            containerToClose.removeEventListener('transitionend', onEnd);
-                            clearTimeout(timeoutId);
-                            resolve();
-                        };
-                        containerToClose.addEventListener('transitionend', onEnd);
-                        const timeoutId = setTimeout(onEnd, 500); // Failsafe timeout
-                    });
-                    containerToClose.classList.remove('expanded');
-                    skillBubbles.forEach(b => b.classList.remove('active'));
-                    activeBubble = null;
-                    await transitionPromise;
-                    containerToClose.remove();
-                    detailsContainer = null;
-                }
-                if (!isCurrentlyActive) {
-                    openDetails(bubble);
-                }
-                else {
-                    isAnimating = false;
+
+                // Remove active state from all cards
+                skillCards.forEach(c => c.classList.remove('active'));
+                activeCard = null;
+
+                // If clicking on a different card, open it
+                if (!wasActive) {
+                    card.classList.add('active');
+                    activeCard = card;
+
+                    // Get sub-skills content
+                    const subSkillsText = card.querySelector('.sub-skills')?.textContent || '';
+                    const subSkillsItems = subSkillsText.split(/,|•/).map(s => s.trim()).filter(Boolean);
+
+                    // Create details container
+                    expandedDetails = document.createElement('div');
+                    expandedDetails.className = 'skill-details-container expanded';
+                    expandedDetails.innerHTML = `
+                        <div class="skill-details-inner">
+                            ${subSkillsItems.map(item => `<span class="sub-skill-item">${item}</span>`).join('')}
+                        </div>
+                    `;
+
+                    // Insert after the card
+                    card.after(expandedDetails);
                 }
             });
         });
-        document.addEventListener('click', (event) => {
-            if (isAnimating || !detailsContainer)
-                return;
-            const target = event.target;
-            if (!target.closest('.skill-bubble') && !target.closest('.skill-details-container')) {
-                isAnimating = true;
-                const containerToClose = detailsContainer;
-                containerToClose.classList.remove('expanded');
-                skillBubbles.forEach(b => b.classList.remove('active'));
-                activeBubble = null;
-                const onEnd = () => {
-                    containerToClose.removeEventListener('transitionend', onEnd);
-                    clearTimeout(timeoutId);
-                    containerToClose.remove();
-                    detailsContainer = null;
-                    isAnimating = false;
-                };
-                containerToClose.addEventListener('transitionend', onEnd);
-                const timeoutId = setTimeout(onEnd, 500);
-            }
-        });
-        window.addEventListener('resize', () => {
-            if (isAnimating || !activeBubble || !detailsContainer)
-                return;
-            const { bubbleToRowMap } = getRows();
-            const currentRow = bubbleToRowMap.get(activeBubble);
-            if (currentRow) {
-                const lastElementInRow = currentRow[currentRow.length - 1];
-                lastElementInRow.after(detailsContainer);
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.skill-card') && !e.target.closest('.skill-details-container')) {
+                if (expandedDetails) {
+                    expandedDetails.remove();
+                    expandedDetails = null;
+                }
+                skillCards.forEach(c => c.classList.remove('active'));
+                activeCard = null;
             }
         });
     }

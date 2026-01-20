@@ -13,18 +13,27 @@
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-    <link href="tailwind.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+        <link href="tailwind.css" rel="stylesheet"/>
     <link href="style.css" rel="stylesheet"/>
   </head>
   <body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark antialiased">
-    <div class="max-w-md mx-auto p-6 md:p-8">
-      <header class="text-center mb-8">
-        <img alt="Profile picture of Jason Wang" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white dark:border-card-dark shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxNUPiEM5R81VO4GTmLBo7eeDLtomc5hewxMwxJvvVx8o5v_dY4sa_8SY81R2AlVRpHSTuNaG4LG9aK6i-2GBZc6tCdGedOZVJlBMARz21nxB2WHJoveurQtlilZDbMVyto_5EkSc_ps6gSZX91hbh8nFYCq6iu2_zbPFSM_S1Z2JvtiEM-MkhZW5WKDCRPcoFJ7S9YQxX8pSLSA_c6PWbjQ6xDO-wwppchVP5OQ-bHMw82n6w4hqCtVF4r6gekoX6VpGlfHmdq00"/>
+    <!-- Glassmorphism Dynamic Background -->
+    <div class="glass-background">
+      <div class="glass-blob glass-blob-1"></div>
+      <div class="glass-blob glass-blob-2"></div>
+      <div class="glass-blob glass-blob-3"></div>
+    </div>
+
+    <div class="max-w-2xl mx-auto p-6 md:p-8">
+      <header class="text-center mb-8 glass-header">
+        <div class="glass-avatar w-32 h-32 rounded-full mx-auto mb-4">
+          <img alt="Profile picture of Jason Wang" class="w-32 h-32 rounded-full border-4 border-white/50 dark:border-white/20 shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxNUPiEM5R81VO4GTmLBo7eeDLtomc5hewxMwxJvvVx8o5v_dY4sa_8SY81R2AlVRpHSTuNaG4LG9aK6i-2GBZc6tCdGedOZVJlBMARz21nxB2WHJoveurQtlilZDbMVyto_5EkSc_ps6gSZX91hbh8nFYCq6iu2_zbPFSM_S1Z2JvtiEM-MkhZW5WKDCRPcoFJ7S9YQxX8pSLSA_c6PWbjQ6xDO-wwppchVP5OQ-bHMw82n6w4hqCtVF4r6gekoX6VpGlfHmdq00"/>
+        </div>
         <h1 data-i18n-key="name" class="text-3xl font-bold text-text-light dark:text-text-dark">
           Jason (Hsi-Chuan) Wang
         </h1>
-        <p data-i18n-key="jobTitle" class="text-lg text-primary font-semibold mt-1">
+        <p data-i18n-key="jobTitle" class="text-lg text-[var(--glass-primary)] font-semibold mt-1">
           Software Engineer
         </p>
         <p data-i18n-key="tagline" class="text-sm text-subtle-light dark:text-subtle-dark mt-2 italic">
@@ -32,42 +41,41 @@
         </p>
         <!-- CTA Buttons -->
         <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-          <a href="mailto:cool24583185@gmail.com" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
-            <span class="material-symbols-outlined">mail</span>
+          <a href="mailto:cool24583185@gmail.com" class="cta-primary-btn inline-flex items-center justify-center gap-2 font-semibold px-6 py-3 rounded-xl transition-all duration-200 transform hover:-translate-y-0.5">
+            <span class="material-symbols-outlined text-xl">mail</span>
             <span data-i18n-key="ctaContact">立即聯繫</span>
           </a>
           <!-- 暫時隱藏：預約系統 500 錯誤，詳見 server/ISSUE_BOOKING_500_ERROR.md -->
-          <a href="javascript:void(0);" id="booking-button" class="hidden inline-flex items-center justify-center gap-2 bg-white dark:bg-card-dark border-2 border-primary text-primary hover:bg-primary/10 dark:hover:bg-primary/20 font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
-            <span class="material-symbols-outlined">calendar_month</span>
+          <a href="javascript:void(0);" id="booking-button" class="hidden inline-flex items-center justify-center gap-2 glass-button text-[var(--glass-primary)] font-semibold px-6 py-3 shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
+            <span class="material-symbols-outlined text-xl">calendar_month</span>
             <span data-i18n-key="ctaSchedule">預約諮詢</span>
           </a>
         </div>
-        <div class="flex justify-center space-x-4 mt-6 text-subtle-light dark:text-subtle-dark">
-          <a class="hover:text-primary dark:hover:text-primary transition-colors" href="https://github.com/fooldrum0814" target="_blank">
-            <svg aria-hidden="true" class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-              <path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" fill-rule="evenodd"></path>
-            </svg>
+        <div class="flex justify-center items-center gap-4 mt-6">
+          <!-- GitHub - Simple Icons -->
+          <a class="social-icon-link" href="https://github.com/fooldrum0814" target="_blank" aria-label="GitHub">
+            <svg role="img" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
           </a>
-          <!-- TODO: Replace # with your LinkedIn profile URL -->
-          <a class="hover:text-primary dark:hover:text-primary transition-colors" href="https://www.linkedin.com/in/%E7%92%BD%E6%AC%8A-%E7%8E%8B-0b1903202/" target="_blank">
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
-            </svg>
+          <!-- LinkedIn - Simple Icons -->
+          <a class="social-icon-link" href="https://www.linkedin.com/in/%E7%92%BD%E6%AC%8A-%E7%8E%8B-0b1903202/" target="_blank" aria-label="LinkedIn">
+            <svg role="img" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           </a>
-          <a class="hover:text-primary dark:hover:text-primary transition-colors" href="mailto:cool24583185@gmail.com">
-            <span class="material-symbols-outlined !text-3xl">mail</span>
+          <!-- Email - Material Symbols -->
+          <a class="social-icon-link" href="mailto:cool24583185@gmail.com" aria-label="Email">
+            <span class="material-symbols-outlined">mail</span>
           </a>
-          <a class="hover:text-primary dark:hover:text-primary transition-colors" href="tel:+886-906-918-543">
-            <span class="material-symbols-outlined !text-3xl">call</span>
+          <!-- Phone - Material Symbols -->
+          <a class="social-icon-link" href="tel:+886-906-918-543" aria-label="Phone">
+            <span class="material-symbols-outlined">call</span>
           </a>
         </div>
       </header>
 
       <section class="mt-8 mb-8">
-        <div class="bg-card-light dark:bg-card-dark p-6 rounded-xl shadow-md cursor-pointer">
+        <div class="glass-about p-6 cursor-pointer">
           <h2 data-i18n-key="aboutMeHeader" class="text-2xl font-bold text-center text-text-light dark:text-text-dark flex items-center justify-center gap-2">
             About Me
-            <span id="about-me-arrow" class="material-symbols-outlined text-xl">expand_more</span>
+            <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]" id="about-me-arrow">expand_more</span>
           </h2>
           <div class="about-me-content mt-4 expanded" id="aboutMeContent">
             <p data-i18n-key="aboutMeP1" class="text-subtle-light dark:text-subtle-dark text-left">
@@ -86,150 +94,150 @@
         <h2 data-i18n-key="servicesHeader" class="text-2xl font-bold mb-6 text-center">我的專業服務</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Service 1 -->
-          <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden flex flex-col p-5 border-l-4 border-primary">
+          <div class="glass-service-card flex flex-col p-5">
             <h3 data-i18n-key="service1Title" class="font-bold text-xl mb-3 text-text-light dark:text-text-dark">跨平台解決方案</h3>
-            
+
             <div class="mb-3">
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-primary text-lg mt-0.5">group</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-primary)] mt-0.5 flex-shrink-0">group</span>
                 <div>
-                  <p class="text-xs font-semibold text-primary mb-1" data-i18n-key="service1ForLabel">適合對象</p>
+                  <p class="text-xs font-semibold text-[var(--glass-primary)] mb-1" data-i18n-key="service1ForLabel">適合對象</p>
                   <p data-i18n-key="service1For" class="text-sm text-subtle-light dark:text-subtle-dark">需要同時維護 iOS/Android 的新創公司、中小企業</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-accent text-lg mt-0.5">problem</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-accent)] mt-0.5 flex-shrink-0">help</span>
                 <div>
-                  <p class="text-xs font-semibold text-accent mb-1" data-i18n-key="service1PainLabel">解決痛點</p>
+                  <p class="text-xs font-semibold text-[var(--glass-accent)] mb-1" data-i18n-key="service1PainLabel">解決痛點</p>
                   <p data-i18n-key="service1Pain" class="text-sm text-subtle-light dark:text-subtle-dark">「您的 App 在 iOS/Android 上維護成本過高嗎？」</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
-                <span class="material-symbols-outlined text-green-600 text-lg mt-0.5">trending_up</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-success)] mt-0.5 flex-shrink-0">trending_up</span>
                 <div>
-                  <p class="text-xs font-semibold text-green-600 mb-1" data-i18n-key="service1ResultLabel">成果指標</p>
+                  <p class="text-xs font-semibold text-[var(--glass-success)] mb-1" data-i18n-key="service1ResultLabel">成果指標</p>
                   <p data-i18n-key="service1Result" class="text-sm text-subtle-light dark:text-subtle-dark">降低 40% 重複開發時間，加速功能上線</p>
                 </div>
               </div>
             </div>
-            
-            <div class="flex flex-wrap gap-2 mt-auto pt-3 border-t border-gray-200 dark:border-gray-700">
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Web</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">iOS</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Android</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Flutter</span>
+
+            <div class="flex flex-wrap gap-2 mt-auto pt-3">
+              <span class="glass-tag">Web</span>
+              <span class="glass-tag">iOS</span>
+              <span class="glass-tag">Android</span>
+              <span class="glass-tag">Flutter</span>
             </div>
           </div>
-          
+
           <!-- Service 2 -->
-          <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden flex flex-col p-5 border-l-4 border-accent">
+          <div class="glass-service-card flex flex-col p-5">
             <h3 data-i18n-key="service2Title" class="font-bold text-xl mb-3 text-text-light dark:text-text-dark">AI 整合與自動化</h3>
-            
+
             <div class="mb-3">
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-primary text-lg mt-0.5">group</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-primary)] mt-0.5 flex-shrink-0">group</span>
                 <div>
-                  <p class="text-xs font-semibold text-primary mb-1" data-i18n-key="service2ForLabel">適合對象</p>
+                  <p class="text-xs font-semibold text-[var(--glass-primary)] mb-1" data-i18n-key="service2ForLabel">適合對象</p>
                   <p data-i18n-key="service2For" class="text-sm text-subtle-light dark:text-subtle-dark">想導入 AI 提升效率的企業、需要自動化流程的團隊</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-accent text-lg mt-0.5">problem</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-accent)] mt-0.5 flex-shrink-0">help</span>
                 <div>
-                  <p class="text-xs font-semibold text-accent mb-1" data-i18n-key="service2PainLabel">解決痛點</p>
+                  <p class="text-xs font-semibold text-[var(--glass-accent)] mb-1" data-i18n-key="service2PainLabel">解決痛點</p>
                   <p data-i18n-key="service2Pain" class="text-sm text-subtle-light dark:text-subtle-dark">「大量重複性工作消耗人力？想用 AI 但不知如何開始？」</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
-                <span class="material-symbols-outlined text-green-600 text-lg mt-0.5">trending_up</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-success)] mt-0.5 flex-shrink-0">trending_up</span>
                 <div>
-                  <p class="text-xs font-semibold text-green-600 mb-1" data-i18n-key="service2ResultLabel">成果指標</p>
+                  <p class="text-xs font-semibold text-[var(--glass-success)] mb-1" data-i18n-key="service2ResultLabel">成果指標</p>
                   <p data-i18n-key="service2Result" class="text-sm text-subtle-light dark:text-subtle-dark">減少 60% 人工處理時間，提升資料準確度</p>
                 </div>
               </div>
             </div>
-            
-            <div class="flex flex-wrap gap-2 mt-auto pt-3 border-t border-gray-200 dark:border-gray-700">
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Google Cloud Platform</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Gemini</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">OpenAI</span>
+
+            <div class="flex flex-wrap gap-2 mt-auto pt-3">
+              <span class="glass-tag">Google Cloud Platform</span>
+              <span class="glass-tag">Gemini</span>
+              <span class="glass-tag">OpenAI</span>
             </div>
           </div>
-          
+
           <!-- Service 3 -->
-          <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden flex flex-col p-5 border-l-4 border-primary">
+          <div class="glass-service-card flex flex-col p-5">
             <h3 data-i18n-key="service3Title" class="font-bold text-xl mb-3 text-text-light dark:text-text-dark">UI/UX 與產品設計</h3>
-            
+
             <div class="mb-3">
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-primary text-lg mt-0.5">group</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-primary)] mt-0.5 flex-shrink-0">group</span>
                 <div>
-                  <p class="text-xs font-semibold text-primary mb-1" data-i18n-key="service3ForLabel">適合對象</p>
+                  <p class="text-xs font-semibold text-[var(--glass-primary)] mb-1" data-i18n-key="service3ForLabel">適合對象</p>
                   <p data-i18n-key="service3For" class="text-sm text-subtle-light dark:text-subtle-dark">產品團隊、需要改善使用者體驗的企業</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-accent text-lg mt-0.5">problem</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-accent)] mt-0.5 flex-shrink-0">help</span>
                 <div>
-                  <p class="text-xs font-semibold text-accent mb-1" data-i18n-key="service3PainLabel">解決痛點</p>
+                  <p class="text-xs font-semibold text-[var(--glass-accent)] mb-1" data-i18n-key="service3PainLabel">解決痛點</p>
                   <p data-i18n-key="service3Pain" class="text-sm text-subtle-light dark:text-subtle-dark">「設計與開發溝通不順？產品上線後使用者反應不佳？」</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
-                <span class="material-symbols-outlined text-green-600 text-lg mt-0.5">trending_up</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-success)] mt-0.5 flex-shrink-0">trending_up</span>
                 <div>
-                  <p class="text-xs font-semibold text-green-600 mb-1" data-i18n-key="service3ResultLabel">成果指標</p>
+                  <p class="text-xs font-semibold text-[var(--glass-success)] mb-1" data-i18n-key="service3ResultLabel">成果指標</p>
                   <p data-i18n-key="service3Result" class="text-sm text-subtle-light dark:text-subtle-dark">提升使用者滿意度，減少開發返工時間</p>
                 </div>
               </div>
             </div>
-            
-            <div class="flex flex-wrap gap-2 mt-auto pt-3 border-t border-gray-200 dark:border-gray-700">
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Figma</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">UI/UX</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Prototyping</span>
+
+            <div class="flex flex-wrap gap-2 mt-auto pt-3">
+              <span class="glass-tag">Figma</span>
+              <span class="glass-tag">UI/UX</span>
+              <span class="glass-tag">Prototyping</span>
             </div>
           </div>
-          
+
           <!-- Service 4 -->
-          <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden flex flex-col p-5 border-l-4 border-accent">
+          <div class="glass-service-card flex flex-col p-5">
             <h3 data-i18n-key="service4Title" class="font-bold text-xl mb-3 text-text-light dark:text-text-dark">原生 App 開發</h3>
-            
+
             <div class="mb-3">
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-primary text-lg mt-0.5">group</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-primary)] mt-0.5 flex-shrink-0">group</span>
                 <div>
-                  <p class="text-xs font-semibold text-primary mb-1" data-i18n-key="service4ForLabel">適合對象</p>
+                  <p class="text-xs font-semibold text-[var(--glass-primary)] mb-1" data-i18n-key="service4ForLabel">適合對象</p>
                   <p data-i18n-key="service4For" class="text-sm text-subtle-light dark:text-subtle-dark">需要高效能原生 iOS App 的企業</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2 mb-2">
-                <span class="material-symbols-outlined text-accent text-lg mt-0.5">problem</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-accent)] mt-0.5 flex-shrink-0">help</span>
                 <div>
-                  <p class="text-xs font-semibold text-accent mb-1" data-i18n-key="service4PainLabel">解決痛點</p>
+                  <p class="text-xs font-semibold text-[var(--glass-accent)] mb-1" data-i18n-key="service4PainLabel">解決痛點</p>
                   <p data-i18n-key="service4Pain" class="text-sm text-subtle-light dark:text-subtle-dark">「需要穩定、高效能的 iOS App？不熟悉上架流程？」</p>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
-                <span class="material-symbols-outlined text-green-600 text-lg mt-0.5">trending_up</span>
+                <span class="material-symbols-outlined text-base text-[var(--glass-success)] mt-0.5 flex-shrink-0">trending_up</span>
                 <div>
-                  <p class="text-xs font-semibold text-green-600 mb-1" data-i18n-key="service4ResultLabel">成果指標</p>
+                  <p class="text-xs font-semibold text-[var(--glass-success)] mb-1" data-i18n-key="service4ResultLabel">成果指標</p>
                   <p data-i18n-key="service4Result" class="text-sm text-subtle-light dark:text-subtle-dark">從開發到上架一站式服務，確保 App 品質</p>
                 </div>
               </div>
             </div>
-            
-            <div class="flex flex-wrap gap-2 mt-auto pt-3 border-t border-gray-200 dark:border-gray-700">
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">iOS</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Android</span>
+
+            <div class="flex flex-wrap gap-2 mt-auto pt-3">
+              <span class="glass-tag">iOS</span>
+              <span class="glass-tag">Android</span>
             </div>
           </div>
         </div>
@@ -237,38 +245,86 @@
 
       <section class="mt-8 mb-8">
         <h2 data-i18n-key="skillsHeader" class="text-2xl font-bold mb-6 text-center">Skills & Expertise</h2>
-        <div class="flex flex-wrap justify-center gap-3">
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillLang">Programming Languages</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillLangDesc">Python, JavaScript, Java, Swift, Kotlin, TypeScript, HTML/CSS</div>
+        <div id="skills-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="lang">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">code</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillLang" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">Programming Languages</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillLangDesc">Python, JavaScript, Java, Swift, Kotlin, TypeScript, HTML/CSS</div>
           </div>
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillBackend">Backend & Frontend</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillBackendDesc">Django, Vue.js, Grapes.js, Node.js</div>
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="backend">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">layers</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillBackend" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">Backend & Frontend</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillBackendDesc">Django, Vue.js, Grapes.js, Node.js</div>
           </div>
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillMobile">Mobile Development</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillMobileDesc">Swift, SwiftUI, MVVM, Kotlin</div>
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="mobile">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">smartphone</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillMobile" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">Mobile Development</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillMobileDesc">Swift, SwiftUI, MVVM, Kotlin</div>
           </div>
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillAPIs">APIs & Services</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillAPIsDesc">OpenAI Assistant, Google Maps, LINE Messaging, RESTful</div>
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="apis">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">api</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillAPIs" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">APIs & Services</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillAPIsDesc">OpenAI Assistant, Google Maps, LINE Messaging, RESTful</div>
           </div>
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillDB">Databases</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillDBDesc">MSSQL, PostgreSQL</div>
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="db">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">database</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillDB" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">Databases</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillDBDesc">MSSQL, PostgreSQL</div>
           </div>
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillMgmt">Team Management</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillMgmtSub">約三年經驗 • Agile • Leadership</div>
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="mgmt">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">group</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillMgmt" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">Team Management</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillMgmtSub">約三年經驗 • Agile • Leadership</div>
           </div>
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillTools">Tools & Platforms</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillToolsDesc">Git, Figma, GCP, Cursor IDE, Gemini-CLI</div>
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="tools">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">build</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillTools" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">Tools & Platforms</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillToolsDesc">Git, Figma, GCP, Cursor IDE, Gemini-CLI</div>
           </div>
-          <div class="skill-bubble bg-primary dark:bg-accent">
-            <span data-i18n-key="skillUIUX">UI/UX Design</span>
-            <div class="sub-skills dark:bg-card-dark" data-i18n-key="skillUIUXDesc">Figma, Prototyping, Data Visualization</div>
+          <div class="skill-card glass-card p-4 flex items-center gap-3 cursor-pointer" data-skill="uiux">
+            <div class="skill-icon-wrapper">
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">palette</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span data-i18n-key="skillUIUX" class="font-semibold text-sm text-text-light dark:text-text-dark block truncate">UI/UX Design</span>
+            </div>
+            <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark skill-arrow transition-transform">expand_more</span>
+            <div class="sub-skills" data-i18n-key="skillUIUXDesc">Figma, Prototyping, Data Visualization</div>
           </div>
         </div>
       </section>
@@ -276,23 +332,23 @@
       <section class="mt-8 mb-8">
         <h2 data-i18n-key="sideProjectsHeader" class="text-2xl font-bold mb-6 text-center">個人專案</h2>
         <div class="space-y-4">
-          <div class="bg-card-light dark:bg-card-dark p-5 rounded-xl shadow-md border-l-4 border-primary">
+          <div class="glass-project-card p-5">
             <div class="flex items-start justify-between mb-2">
               <h3 data-i18n-key="sideProject1Title" class="font-bold text-lg text-text-light dark:text-text-dark">RightYeh - 雲端服務</h3>
-              <span class="material-symbols-outlined text-primary">cloud</span>
+              <span class="material-symbols-outlined text-xl text-[var(--glass-primary)]">cloud</span>
             </div>
             <p data-i18n-key="sideProject1Desc" class="text-sm text-subtle-light dark:text-subtle-dark mb-3">
               在 GCP 上架構並部署可擴展的 RESTful API，使用 Node.js、PostgreSQL。運用 Cursor IDE 和 Gemini-CLI 加速開發流程並優化程式碼品質。
             </p>
-            <div class="bg-primary/10 dark:bg-primary/20 rounded-lg p-3 mb-3">
-              <p class="text-xs font-semibold text-primary mb-1" data-i18n-key="sideProject1MetricsLabel">專案成果</p>
+            <div class="bg-gradient-to-r from-[var(--glass-primary)]/10 to-[var(--glass-accent)]/10 dark:from-[var(--glass-primary)]/20 dark:to-[var(--glass-accent)]/20 rounded-lg p-3 mb-3 backdrop-blur-sm">
+              <p class="text-xs font-semibold text-[var(--glass-primary)] mb-1" data-i18n-key="sideProject1MetricsLabel">專案成果</p>
               <p data-i18n-key="sideProject1Metrics" class="text-sm text-text-light dark:text-text-dark">API 回應時間 &lt;200ms，支援同時處理 1000+ 請求</p>
             </div>
             <div class="flex flex-wrap gap-2">
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Google Cloud Platform</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">RESTful API</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">iOS</span>
-              <span class="text-xs font-medium bg-primary/20 text-primary px-2 py-1 rounded-full">Android</span>
+              <span class="glass-tag">Google Cloud Platform</span>
+              <span class="glass-tag">RESTful API</span>
+              <span class="glass-tag">iOS</span>
+              <span class="glass-tag">Android</span>
             </div>
           </div>
           
@@ -338,35 +394,31 @@
 
       <section class="mt-8 mb-8">
         <h2 data-i18n-key="experienceHeader" class="text-2xl font-bold mb-6 text-center">經歷證明</h2>
-        <div class="bg-gradient-to-br from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 rounded-xl p-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- 左側：工作經歷 -->
-            <div>
-              <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-primary text-2xl">work_history</span>
-                <h3 class="font-bold text-lg text-text-light dark:text-text-dark" data-i18n-key="expWorkTitle">工作經歷</h3>
-              </div>
-              <ul class="space-y-3">
-                <li class="flex items-start gap-2">
-                  <span class="material-symbols-outlined text-primary text-sm mt-1">check_circle</span>
-                  <span data-i18n-key="expHighlight1" class="text-sm text-text-light dark:text-text-dark">
-                    <strong>4+ 年</strong>軟體研發經驗
-                  </span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="material-symbols-outlined text-primary text-sm mt-1">check_circle</span>
-                  <span data-i18n-key="expHighlight2" class="text-sm text-text-light dark:text-text-dark">
-                    帶領<strong>跨平台 SDK</strong>、<strong>AI 工具</strong>、<strong>iOS App</strong> 等多項專案
-                  </span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="material-symbols-outlined text-primary text-sm mt-1">check_circle</span>
-                  <span data-i18n-key="expHighlight3" class="text-sm text-text-light dark:text-text-dark">
-                    擁有<strong>約三年團隊管理經驗</strong>，熟悉敏捷開發流程
-                  </span>
-                </li>
-              </ul>
-            </div>
+        <div class="glass-experience p-6">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-2xl text-[var(--glass-primary)]">work</span>
+            <h3 class="font-bold text-lg text-text-light dark:text-text-dark" data-i18n-key="expWorkTitle">工作經歷</h3>
+          </div>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-base text-[var(--glass-primary)] mt-0.5 flex-shrink-0">check_circle</span>
+              <span data-i18n-key="expHighlight1" class="text-sm text-text-light dark:text-text-dark">
+                <strong>4+ 年</strong>軟體研發經驗
+              </span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-base text-[var(--glass-primary)] mt-0.5 flex-shrink-0">check_circle</span>
+              <span data-i18n-key="expHighlight2" class="text-sm text-text-light dark:text-text-dark">
+                帶領<strong>跨平台 SDK</strong>、<strong>AI 工具</strong>、<strong>iOS App</strong> 等多項專案
+              </span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-base text-[var(--glass-primary)] mt-0.5 flex-shrink-0">check_circle</span>
+              <span data-i18n-key="expHighlight3" class="text-sm text-text-light dark:text-text-dark">
+                擁有<strong>約三年團隊管理經驗</strong>，熟悉敏捷開發流程
+              </span>
+            </li>
+          </ul>
             
             <!-- 右側：核心專案 -->
             <!-- <div>
@@ -393,8 +445,7 @@
                 </div>
               </div>
             </div> -->
-          </div>
-          
+
           <!-- 底部：教育背景 -->
           <!-- <div class="mt-6 pt-6 border-t border-gray-300 dark:border-gray-600">
             <div class="flex items-center gap-2 mb-2">
@@ -410,41 +461,42 @@
 
       <!-- CTA Section -->
       <section class="mt-12 mb-8">
-        <div class="bg-gradient-to-r from-primary to-accent rounded-2xl p-8 text-center shadow-2xl">
-          <h2 data-i18n-key="ctaSectionTitle" class="text-2xl md:text-3xl font-bold text-white mb-3">
-            準備開始您的專案了嗎？
-          </h2>
-          <p data-i18n-key="ctaSectionDesc" class="text-white/90 mb-6 max-w-2xl mx-auto">
-            無論是跨平台開發、AI 整合，還是 App 開發需求，我都能為您提供專業的解決方案。立即聯繫，讓我們一起討論如何將您的想法變為現實。
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:cool24583185@gmail.com" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-primary font-bold px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1">
-              <span class="material-symbols-outlined">mail</span>
-              <span data-i18n-key="ctaContactButton">立即聯繫我</span>
-            </a>
-            <!-- 暫時隱藏：預約系統 500 錯誤，詳見 server/ISSUE_BOOKING_500_ERROR.md -->
-            <a href="javascript:void(0);" id="booking-button-footer" class="hidden inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white hover:bg-white/10 text-white font-bold px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1">
-              <span class="material-symbols-outlined">calendar_month</span>
-              <span data-i18n-key="ctaScheduleButton">預約免費諮詢</span>
-            </a>
-          </div>
-          <div class="mt-6 flex items-center justify-center gap-4 text-white/80 text-sm">
-            <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-base">schedule</span>
-              <span data-i18n-key="ctaResponseTime">24 小時內回覆</span>
+        <div class="glass-cta p-8 text-center">
+            <h2 data-i18n-key="ctaSectionTitle" class="text-2xl md:text-3xl font-bold text-white mb-3">
+              準備開始您的專案了嗎？
+            </h2>
+            <p data-i18n-key="ctaSectionDesc" class="text-white/95 mb-6 max-w-2xl mx-auto leading-relaxed">
+              無論是跨平台開發、AI 整合，還是 App 開發需求，我都能為您提供專業的解決方案。立即聯繫，讓我們一起討論如何將您的想法變為現實。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="mailto:cool24583185@gmail.com" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-white/95 text-[var(--glass-primary)] font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1">
+                <span class="material-symbols-outlined text-xl">mail</span>
+                <span data-i18n-key="ctaContactButton">立即聯繫我</span>
+              </a>
+              <!-- 暫時隱藏：預約系統 500 錯誤，詳見 server/ISSUE_BOOKING_500_ERROR.md -->
+              <a href="javascript:void(0);" id="booking-button-footer" class="hidden inline-flex items-center justify-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 hover:bg-white/25 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1">
+                <span class="material-symbols-outlined text-xl">calendar_month</span>
+                <span data-i18n-key="ctaScheduleButton">預約免費諮詢</span>
+              </a>
             </div>
-            <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-base">verified</span>
-              <span data-i18n-key="ctaExperience">3+ 年經驗</span>
+            <div class="mt-6 flex items-center justify-center gap-6 text-white/90 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">schedule</span>
+                <span data-i18n-key="ctaResponseTime">24 小時內回覆</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">verified</span>
+                <span data-i18n-key="ctaExperience">3+ 年經驗</span>
+              </div>
             </div>
-          </div>
         </div>
       </section>
 
-      <footer class="text-center mt-12 text-sm text-subtle-light dark:text-subtle-dark">
+      <footer class="glass-footer text-center mt-12 text-sm text-subtle-light dark:text-subtle-dark">
         <p data-i18n-key="footerCredit">© 2025 Jason (Hsi-Chuan) Wang</p>
-        <div class="mt-4">
-          <select id="language-selector" class="bg-card-light dark:bg-card-dark text-subtle-light dark:text-subtle-dark rounded-md px-3 py-1.5 pr-8 border border-primary/30 focus:border-primary focus:ring-1 focus:ring-primary appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M6%209L1%204h10z%22/%3E%3C/svg%3E')] dark:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M6%209L1%204h10z%22/%3E%3C/svg%3E')] bg-no-repeat bg-[length:1rem] bg-[right_0.5rem_center] min-w-[120px]">
+        <div class="mt-4 flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-base text-subtle-light dark:text-subtle-dark">language</span>
+          <select id="language-selector" class="glass-select text-subtle-light dark:text-subtle-dark px-3 py-1.5 pr-8 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M6%209L1%204h10z%22/%3E%3C/svg%3E')] dark:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M6%209L1%204h10z%22/%3E%3C/svg%3E')] bg-no-repeat bg-[length:1rem] bg-[right_0.5rem_center] min-w-[120px]">
             <option value="en">English</option>
             <option value="zh-TW">繁體中文</option>
           </select>
@@ -454,11 +506,11 @@
     <script src="main.js" defer></script>
 
     <!-- Booking Modal -->
-    <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-      <div class="bg-card-light dark:bg-card-dark rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
-        <header class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+    <div id="booking-modal" class="fixed inset-0 glass-modal-backdrop z-50 hidden items-center justify-center p-4">
+      <div class="glass-modal w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+        <header class="p-5 flex justify-between items-center">
           <h2 data-i18n-key="bookingModalTitle" class="text-xl font-bold text-text-light dark:text-text-dark">預約諮詢</h2>
-          <button id="booking-modal-close" class="text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary">
+          <button id="booking-modal-close" class="text-subtle-light dark:text-subtle-dark hover:text-[var(--glass-primary)]">
             <span class="material-symbols-outlined !text-3xl">close</span>
           </button>
         </header>
@@ -508,10 +560,10 @@
             <span class="material-symbols-outlined text-red-500 !text-6xl mb-4">error</span>
             <h3 data-i18n-key="bookingErrorTitle" class="text-xl font-bold text-text-light dark:text-text-dark mb-2">預約失敗</h3>
             <p id="error-message-text" class="text-subtle-light dark:text-subtle-dark mb-4">發生錯誤，請稍後再試。</p>
-            <button id="booking-retry-btn" data-i18n-key="bookingRetry" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg">重試</button>
+            <button id="booking-retry-btn" data-i18n-key="bookingRetry" class="bg-gradient-to-r from-[var(--glass-primary)] to-[var(--glass-accent)] hover:opacity-90 text-white font-semibold px-6 py-3 rounded-lg">重試</button>
           </div>
         </main>
-        <footer id="booking-footer" class="p-5 border-t border-gray-200 dark:border-gray-700 hidden">
+        <footer id="booking-footer" class="p-5 hidden">
             <p id="booking-confirmation-text" class="text-sm text-subtle-light dark:text-subtle-dark mb-4 text-center"></p>
             
             <!-- Form Error Message -->
@@ -533,14 +585,14 @@
                   <label for="booking-name" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
                     <span data-i18n-key="bookingName">姓名</span> <span data-i18n-key="bookingRequired" class="text-red-500">*</span>
                   </label>
-                  <input 
-                    type="text" 
-                    id="booking-name" 
+                  <input
+                    type="text"
+                    id="booking-name"
                     name="name"
                     required
                     data-i18n-placeholder="bookingNamePlaceholder"
                     placeholder="請輸入您的姓名"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    class="w-full px-3 py-2 glass-input text-text-light dark:text-text-dark placeholder-gray-400"
                   >
                 </div>
                 
@@ -549,14 +601,14 @@
                   <label for="booking-email" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
                     <span data-i18n-key="bookingEmail">Email</span> <span data-i18n-key="bookingRequired" class="text-red-500">*</span>
                   </label>
-                  <input 
-                    type="email" 
-                    id="booking-email" 
+                  <input
+                    type="email"
+                    id="booking-email"
                     name="email"
                     required
                     data-i18n-placeholder="bookingEmailPlaceholder"
                     placeholder="your@email.com"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    class="w-full px-3 py-2 glass-input text-text-light dark:text-text-dark placeholder-gray-400"
                   >
                 </div>
               </div>
@@ -566,13 +618,13 @@
                 <label for="booking-phone" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
                   <span data-i18n-key="bookingPhone">聯絡電話</span>
                 </label>
-                <input 
-                  type="tel" 
-                  id="booking-phone" 
+                <input
+                  type="tel"
+                  id="booking-phone"
                   name="phone"
                   data-i18n-placeholder="bookingPhonePlaceholder"
                   placeholder="0912-345-678（選填）"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  class="w-full px-3 py-2 glass-input text-text-light dark:text-text-dark placeholder-gray-400"
                 >
               </div>
               
@@ -581,18 +633,18 @@
                 <label for="booking-topic" class="block text-sm font-semibold text-text-light dark:text-text-dark mb-1">
                   <span data-i18n-key="bookingTopic">諮詢主題</span>
                 </label>
-                <textarea 
-                  id="booking-topic" 
+                <textarea
+                  id="booking-topic"
                   name="topic"
                   rows="3"
                   data-i18n-placeholder="bookingTopicPlaceholder"
                   placeholder="簡短描述您想諮詢的內容（選填）"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-light dark:text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                  class="w-full px-3 py-2 glass-input text-text-light dark:text-text-dark placeholder-gray-400 resize-none"
                 ></textarea>
               </div>
             </form>
             
-            <button id="confirm-booking-button" data-i18n-key="confirmBookingButton" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg w-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+            <button id="confirm-booking-button" data-i18n-key="confirmBookingButton" class="bg-gradient-to-r from-[var(--glass-primary)] to-[var(--glass-accent)] hover:opacity-90 text-white font-semibold px-6 py-3 rounded-lg w-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
               確認預約
             </button>
         </footer>
