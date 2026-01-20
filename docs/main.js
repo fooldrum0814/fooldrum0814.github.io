@@ -88,13 +88,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Language selector not found!');
                 return;
             }
+            const langDisplay = document.getElementById('lang-display');
+            const updateLangDisplay = (lang) => {
+                if (langDisplay) {
+                    langDisplay.textContent = lang === 'zh-TW' ? '繁體中文' : 'English';
+                }
+            };
             this.loadTranslations().then(() => {
                 const initialLang = this.getInitialLanguage();
                 languageSelector.value = initialLang;
+                updateLangDisplay(initialLang);
                 this.translatePage(initialLang);
                 languageSelector.addEventListener('change', (e) => {
                     const newLang = e.target.value;
                     localStorage.setItem('language', newLang);
+                    updateLangDisplay(newLang);
                     this.translatePage(newLang);
                     // 切換語言後自動滾動到最上方（兼容手機瀏覽器）
                     setTimeout(() => {
